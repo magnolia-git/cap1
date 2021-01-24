@@ -42,12 +42,15 @@ public class AccountHolder {
 	@NotNull(message = "SSN can not be null")
 	@NotBlank(message = "SSN can not be blank")
 	String SSN;
-
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
-	private List<CheckingAccount> checkingAccounts;
+	private List<DBAChecking> dbaCheckings;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
-	private List<SavingsAccount> savingsAccounts;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	private CheckingAccount checkingAccounts;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	private SavingsAccount savingsAccounts;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private List<CDAccount> cDAccounts;
@@ -81,18 +84,25 @@ public class AccountHolder {
 	}
 
 	@JsonManagedReference
-	public List<CheckingAccount> getCheckingAccounts() {
+	public CheckingAccount getCheckingAccounts() {
 		return checkingAccounts;
 	}
-	public void setCheckingAccounts(List<CheckingAccount> checkingAccounts) {
-		this.checkingAccounts = new ArrayList<CheckingAccount>(checkingAccounts);
+	@JsonManagedReference
+	public List<DBAChecking> getDBACheckingAccounts() {
+		return dbaCheckings;
+	}
+	public void setCheckingAccounts(CheckingAccount checkingAccounts) {
+		this.checkingAccounts = checkingAccounts;
+	}
+	public void setDBACheckingAccounts(List<DBAChecking> DBACheckings) {
+		this.dbaCheckings = new ArrayList<DBAChecking>(DBACheckings);
 	}
 	@JsonManagedReference
-	public List<SavingsAccount> getSavingsAccounts() {
+	public SavingsAccount getSavingsAccounts() {
 		return savingsAccounts;
 	}
-	public void setSavingsAccounts(List<SavingsAccount> savingsAccounts) {
-		this.savingsAccounts = new ArrayList<SavingsAccount>(savingsAccounts);
+	public void setSavingsAccounts(SavingsAccount savingsAccounts) {
+		this.savingsAccounts = savingsAccounts;
 	}
 	@JsonManagedReference
 	public List<CDAccount> getcDAccounts() {
@@ -136,34 +146,24 @@ public class AccountHolder {
 		SSN = sSN;
 		return this;
 	}
-	public int getNumberOfCheckingAccounts() {
-		if (checkingAccounts != null) {
-			return checkingAccounts.size();
-		}
-		return 0;
-	}
+
 	public double getCheckingBalance() {
 		double totalBalance = 0;
 		if (checkingAccounts != null) {
-			for (BankAccount ca : checkingAccounts) {
-				totalBalance = totalBalance + ca.getBalance();
-			}
+
+				totalBalance = totalBalance + checkingAccounts.getBalance();
+
 			return totalBalance;
 		}
 		return 0;
 	}
-	public int getNumberOfSavingsAccounts() {
-		if (savingsAccounts != null) {
-			return savingsAccounts.size();
-		}
-		return 0;
-	}
+
 	public double getSavingsBalance() {
 		double totalBalance = 0;
 		if (savingsAccounts != null) {
-			for (BankAccount sa : savingsAccounts) {
-				totalBalance = totalBalance + sa.getBalance();
-			}
+			
+				totalBalance = totalBalance + savingsAccounts.getBalance();
+			
 		}
 		return totalBalance;
 	}

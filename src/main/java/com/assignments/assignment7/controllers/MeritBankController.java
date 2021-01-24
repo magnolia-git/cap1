@@ -112,17 +112,6 @@ public class MeritBankController {
 		return ah;
 	}
 
-//	@GetMapping(value = "/ContactDetails")
-//	public List<AccountHoldersContactDetails> getAccountHoldersContactDetails(){
-//		return meritBankService.getAccountHoldersContactDetails();
-//	}
-
-//	@ResponseStatus(HttpStatus.OK)
-//	@PostMapping(value = "/ContactDetails/{id}")
-//	public AccountHoldersContactDetails postContactDetails(@Valid @RequestBody AccountHoldersContactDetails ahContactDetails,
-//			@PathVariable Integer id){
-//		return meritBankService.postContactDetails(ahContactDetails, id);
-//	}
 
 	@PreAuthorize("hasAuthority('admin')")
 	@ResponseStatus(HttpStatus.OK)
@@ -135,7 +124,7 @@ public class MeritBankController {
 	@PreAuthorize("hasAuthority('admin')")
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(value = "/AccountHolders/{id}/CheckingAccounts")
-	public List<CheckingAccount> getCheckingAccountsById(@PathVariable Integer id) throws AccountNotFoundException {
+	public CheckingAccount getCheckingAccountsById(@PathVariable Integer id) throws AccountNotFoundException {
 		try {
 			return meritBankService.getCheckingAccountsById(id);
 		} catch (Exception e) {
@@ -155,7 +144,7 @@ public class MeritBankController {
 	@PreAuthorize("hasAuthority('admin')")
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(value = "/AccountHolders/{id}/SavingsAccounts")
-	public List<SavingsAccount> getSavingsAccountsById(@PathVariable int id) throws AccountNotFoundException {
+	public SavingsAccount getSavingsAccountsById(@PathVariable int id) throws AccountNotFoundException {
 		return meritBankService.getSavingsAccountsById(id);
 	}
 
@@ -185,7 +174,7 @@ public class MeritBankController {
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.CREATED)
 	@GetMapping(value = "/Me/CheckingAccount")
-	public List<CheckingAccount> getMyCheckingAccounts(HttpServletRequest request) {
+	public CheckingAccount getMyCheckingAccounts(HttpServletRequest request) {
 		return meritBankService.getMyCheckingAccounts(request);
 	}
 	
@@ -209,7 +198,7 @@ public class MeritBankController {
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.CREATED)
 	@GetMapping(value = "/Me/SavingsAccounts")
-	public List<SavingsAccount> getMySavingsAccounts(HttpServletRequest request){
+	public SavingsAccount getMySavingsAccounts(HttpServletRequest request){
 		return meritBankService.getMySavingsAccounts(request);
 	}
 	
@@ -241,5 +230,8 @@ public class MeritBankController {
 	public List<CDOffering> getCDOfferings() {
 		return meritBankService.getCDOfferings();
 	}
+	
+	
+	
 
 }
