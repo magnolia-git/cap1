@@ -34,6 +34,7 @@ import com.assignments.assignment7.models.AuthenticationResponse;
 import com.assignments.assignment7.models.CDAccount;
 import com.assignments.assignment7.models.CDOffering;
 import com.assignments.assignment7.models.CheckingAccount;
+import com.assignments.assignment7.models.DBAChecking;
 import com.assignments.assignment7.models.SavingsAccount;
 import com.assignments.assignment7.models.SignupRequest;
 import com.assignments.assignment7.services.MeritBankService;
@@ -42,6 +43,7 @@ import com.assignments.assignment7.util.JwtUtil;
 
 import Exceptions.AccountNotFoundException;
 import Exceptions.ExceedsCombinedBalanceLimitException;
+import Exceptions.ToManyAccountsException;
 
 @RestController
 public class MeritBankController {
@@ -115,22 +117,37 @@ public class MeritBankController {
 
 	@PreAuthorize("hasAuthority('admin')")
 	@ResponseStatus(HttpStatus.OK)
+	@PostMapping(value = "/AccountHolders/{id}/DBACheckingAccounts")
+	public DBAChecking postDBACheckingAccount(@Valid @RequestBody DBAChecking checkingAccount,
+			@PathVariable Integer id) throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
+		return meritBankService.postDBACheckingAccount(checkingAccount, id);
+	}
+	
+	@PreAuthorize("hasAuthority('admin')")
+	@ResponseStatus(HttpStatus.OK)
 	@PostMapping(value = "/AccountHolders/{id}/CheckingAccounts")
 	public CheckingAccount postCheckingAccount(@Valid @RequestBody CheckingAccount checkingAccount,
 			@PathVariable Integer id) throws ExceedsCombinedBalanceLimitException {
 		return meritBankService.postCheckingAccount(checkingAccount, id);
 	}
 
+
+	@PreAuthorize("hasAuthority('admin')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/AccountHolders/{id}/DBACheckingAccounts")
+	public List<DBAChecking> getDBACheckingAccountsById(@PathVariable Integer id) throws AccountNotFoundException {
+
+			return meritBankService.getDBACheckingAccountsById(id);
+
+	}
+	
 	@PreAuthorize("hasAuthority('admin')")
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(value = "/AccountHolders/{id}/CheckingAccounts")
 	public CheckingAccount getCheckingAccountsById(@PathVariable Integer id) throws AccountNotFoundException {
-		try {
+
 			return meritBankService.getCheckingAccountsById(id);
-		} catch (Exception e) {
-			// TODO: handle exception
-			return null;
-		}
+		
 	}
 
 	@PreAuthorize("hasAuthority('admin')")
@@ -231,7 +248,20 @@ public class MeritBankController {
 		return meritBankService.getCDOfferings();
 	}
 	
-	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/DBACheckingAccount")
+	public DBAChecking postMyCheckingAccount(HttpServletRequest request,@Valid @RequestBody DBAChecking dbacheckingAccount)
+			throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
+		
+		return meritBankService.postMyDBACheckingAccount(request, dbacheckingAccount);
+	}
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@GetMapping(value = "/Me/CDAccounts")
+	public List<DBAChecking> getMyDBACheckingAccounts(HttpServletRequest request) {
+		return meritBankService.getMyDBACheckingAccounts(request);
+	}
 	
 
 }

@@ -243,6 +243,20 @@ public class MeritBankService {
 		checkingAccountRepository.save(checkingAccount);
 		return checkingAccount;
 	}
+	public DBAChecking postMyDBACheckingAccount(HttpServletRequest request,DBAChecking dbacheckingAccount)
+			throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
+		AccountHolder ah = getMyAccountInfo(request);
+		if (ah.getDBACheckingAccounts().size() >= 3) {
+			throw new ToManyAccountsException("can only have 3 DBA checking accounts ");
+		}
+		if (ah.getCombinedBalance() + dbacheckingAccount.getBalance() > 250000) {
+			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
+		}
+		ah.setDBACheckingAccounts((Arrays.asList(dbacheckingAccount)));
+		dbacheckingAccount.setAccountHolder(ah);
+		DBACheckingRepo.save(dbacheckingAccount);
+		return dbacheckingAccount;
+	}
 
 	public SavingsAccount postMySavingsAccount(HttpServletRequest request, SavingsAccount savingsAccount)
 			throws ExceedsCombinedBalanceLimitException {
@@ -261,7 +275,10 @@ public class MeritBankService {
 		AccountHolder ah = getMyAccountInfo(request);
 		return ah.getSavingsAccounts();
 	}
-
+	public List<DBAChecking> getMyDBACheckingAccounts(HttpServletRequest request) {
+		AccountHolder ah = getMyAccountInfo(request);
+		return ah.getDBACheckingAccounts();
+	}
 	public CDAccount postMyCDAccounts(HttpServletRequest request, CDAccount cDAccount)
 			throws ExceedsCombinedBalanceLimitException {
 
