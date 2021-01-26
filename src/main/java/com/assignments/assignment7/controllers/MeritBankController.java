@@ -35,6 +35,9 @@ import com.assignments.assignment7.models.CDAccount;
 import com.assignments.assignment7.models.CDOffering;
 import com.assignments.assignment7.models.CheckingAccount;
 import com.assignments.assignment7.models.DBAChecking;
+import com.assignments.assignment7.models.IRA;
+import com.assignments.assignment7.models.RolloverIRA;
+import com.assignments.assignment7.models.RothIRA;
 import com.assignments.assignment7.models.SavingsAccount;
 import com.assignments.assignment7.models.SignupRequest;
 import com.assignments.assignment7.services.MeritBankService;
@@ -125,6 +128,28 @@ public class MeritBankController {
 	
 	@PreAuthorize("hasAuthority('admin')")
 	@ResponseStatus(HttpStatus.OK)
+	@PostMapping(value = "/AccountHolders/{id}/IRA")
+	public IRA postDBACheckingAccount(@Valid @RequestBody IRA ira,
+			@PathVariable Integer id) throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
+		return meritBankService.postIRA(ira, id);
+	}
+	@PreAuthorize("hasAuthority('admin')")
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping(value = "/AccountHolders/{id}/RothIRA")
+	public RothIRA postDBACheckingAccount(@Valid @RequestBody RothIRA ira,
+			@PathVariable Integer id) throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
+		return meritBankService.postRothIRA(ira, id);
+	}
+	@PreAuthorize("hasAuthority('admin')")
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping(value = "/AccountHolders/{id}/RolloverIRA")
+	public RolloverIRA postDBACheckingAccount(@Valid @RequestBody RolloverIRA ira,
+			@PathVariable Integer id) throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
+		return meritBankService.postRolloverIRA(ira, id);
+	}
+	
+	@PreAuthorize("hasAuthority('admin')")
+	@ResponseStatus(HttpStatus.OK)
 	@PostMapping(value = "/AccountHolders/{id}/CheckingAccounts")
 	public CheckingAccount postCheckingAccount(@Valid @RequestBody CheckingAccount checkingAccount,
 			@PathVariable Integer id) throws ExceedsCombinedBalanceLimitException {
@@ -138,6 +163,31 @@ public class MeritBankController {
 	public List<DBAChecking> getDBACheckingAccountsById(@PathVariable Integer id) throws AccountNotFoundException {
 
 			return meritBankService.getDBACheckingAccountsById(id);
+
+	}
+	@PreAuthorize("hasAuthority('admin')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/AccountHolders/{id}/IRA")
+	public IRA getIRAById(@PathVariable Integer id) throws AccountNotFoundException {
+
+			return meritBankService.getiraById(id);
+
+	}
+	
+	@PreAuthorize("hasAuthority('admin')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/AccountHolders/{id}/RothIRA")
+	public RothIRA getRothIRAById(@PathVariable Integer id) throws AccountNotFoundException {
+
+			return meritBankService.getRothIraById(id);
+
+	}
+	@PreAuthorize("hasAuthority('admin')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/AccountHolders/{id}/RothIRA")
+	public RolloverIRA getRolloverIRAById(@PathVariable Integer id) throws AccountNotFoundException {
+
+			return meritBankService.getRolloverIRAById(id);
 
 	}
 	
@@ -214,6 +264,54 @@ public class MeritBankController {
 	
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/IRA")
+	public IRA postMyIRA(HttpServletRequest request, @Valid @RequestBody IRA ira) 
+			throws ExceedsCombinedBalanceLimitException{
+		return meritBankService.postMyIRA(request, ira);
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@GetMapping(value = "/Me/IRA")
+	public IRA getMyIRA(HttpServletRequest request) 
+			throws ExceedsCombinedBalanceLimitException{
+		return meritBankService.getMyIRA(request);
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/RothIRA")
+	public RothIRA postMyIRA(HttpServletRequest request, @Valid @RequestBody RothIRA RothIRA) 
+			throws ExceedsCombinedBalanceLimitException{
+		return meritBankService.postMyRothIRA(request, RothIRA);
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/RolloverIRA")
+	public RolloverIRA postMyIRA(HttpServletRequest request, @Valid @RequestBody RolloverIRA RolloverIRA) 
+			throws ExceedsCombinedBalanceLimitException{
+		return meritBankService.postMyRolloverIRA(request, RolloverIRA);
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@GetMapping(value = "/Me/RothIRA")
+	public RothIRA getMyRothIRA(HttpServletRequest request) 
+			throws ExceedsCombinedBalanceLimitException{
+		return meritBankService.getMyRothIRA(request);
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@GetMapping(value = "/Me/RolloverIRA")
+	public RolloverIRA getMyRolloverIRA(HttpServletRequest request) 
+			throws ExceedsCombinedBalanceLimitException{
+		return meritBankService.getMyRolloverIRA(request);
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
 	@GetMapping(value = "/Me/SavingsAccounts")
 	public SavingsAccount getMySavingsAccounts(HttpServletRequest request){
 		return meritBankService.getMySavingsAccounts(request);
@@ -258,7 +356,7 @@ public class MeritBankController {
 	}
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.CREATED)
-	@GetMapping(value = "/Me/CDAccounts")
+	@GetMapping(value = "/Me/DBACheckingAccount")
 	public List<DBAChecking> getMyDBACheckingAccounts(HttpServletRequest request) {
 		return meritBankService.getMyDBACheckingAccounts(request);
 	}

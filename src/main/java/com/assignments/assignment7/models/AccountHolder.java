@@ -43,6 +43,15 @@ public class AccountHolder {
 	@NotBlank(message = "SSN can not be blank")
 	String SSN;
 	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	private RolloverIRA rollOverIRA;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	private RothIRA rothIRA;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	private IRA ira;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private List<DBAChecking> dbaCheckings;
 
@@ -79,7 +88,7 @@ public class AccountHolder {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(User user) {	
 		this.user = user;
 	}
 
@@ -87,16 +96,45 @@ public class AccountHolder {
 	public CheckingAccount getCheckingAccounts() {
 		return checkingAccounts;
 	}
-	@JsonManagedReference
-	public List<DBAChecking> getDBACheckingAccounts() {
+
+	public RolloverIRA getRollOverIRA() {
+		return rollOverIRA;
+	}
+
+	public RothIRA getRothIRA() {
+		return rothIRA;
+	}
+
+	public void setRollOverIRA(RolloverIRA rollOverIRA) {
+		this.rollOverIRA = rollOverIRA;
+	}
+
+	public IRA getIra() {
+		return ira;
+	}
+
+	public List<DBAChecking> getDbaCheckings() {
 		return dbaCheckings;
 	}
+
+	public void setIra(IRA ira) {
+		this.ira = ira;
+	}
+
+	public void setDbaCheckings(List<DBAChecking> dbaCheckings) {
+		this.dbaCheckings = dbaCheckings;
+	}
+
+	public void setRothIRA(RothIRA rothIRA) {
+		this.rothIRA = rothIRA;
+	}
+
+
+
 	public void setCheckingAccounts(CheckingAccount checkingAccounts) {
 		this.checkingAccounts = checkingAccounts;
 	}
-	public void setDBACheckingAccounts(List<DBAChecking> DBACheckings) {
-		this.dbaCheckings = new ArrayList<DBAChecking>(DBACheckings);
-	}
+
 	@JsonManagedReference
 	public SavingsAccount getSavingsAccounts() {
 		return savingsAccounts;

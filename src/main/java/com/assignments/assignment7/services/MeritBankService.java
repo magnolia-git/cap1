@@ -18,27 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.assignments.assignment7.repository.UserRepository;
 import com.assignments.assignment7.util.JwtUtil;
-import com.assignments.assignment7.models.Role;
+import com.assignments.assignment7.models.*;
+import com.assignments.assignment7.repository.*;
 
-import com.assignments.assignment7.models.User;
-import com.assignments.assignment7.models.AccountHolder;
-import com.assignments.assignment7.models.AccountHoldersContactDetails;
-import com.assignments.assignment7.models.AuthenticationRequest;
-import com.assignments.assignment7.models.CDAccount;
-import com.assignments.assignment7.models.CDOffering;
-import com.assignments.assignment7.models.CheckingAccount;
-import com.assignments.assignment7.models.DBAChecking;
-import com.assignments.assignment7.models.ERole;
-import com.assignments.assignment7.models.SavingsAccount;
-import com.assignments.assignment7.models.SignupRequest;
-import com.assignments.assignment7.repository.AccountHolderRepository;
-import com.assignments.assignment7.repository.AccountHoldersContactDetailsRepository;
-import com.assignments.assignment7.repository.CDAccountRepository;
-import com.assignments.assignment7.repository.CDOfferingRepository;
-import com.assignments.assignment7.repository.CheckingAccountRepository;
-import com.assignments.assignment7.repository.DBACheckingRepository;
-import com.assignments.assignment7.repository.SavingsAccountRepository;
-import com.assignments.assignment7.repository.RoleRepository;
+
 
 import Exceptions.AccountNotFoundException;
 import Exceptions.ExceedsCombinedBalanceLimitException;
@@ -46,6 +29,12 @@ import Exceptions.ToManyAccountsException;
 
 @Service
 public class MeritBankService {
+	@Autowired 
+	private RolloverIRARepository RollIRA;
+	@Autowired
+	private RothIRARepository RothIRARepo;
+	@Autowired
+	private IRARepository irarepo;
 	@Autowired
 	private DBACheckingRepository DBACheckingRepo;
 	@Autowired
@@ -150,25 +139,56 @@ public class MeritBankService {
 		return checkingAccount;
 	}
 
+	public IRA postIRA(IRA ira, Integer id) {
+		AccountHolder ah = getById(id);
+		ah.setIra(ira);
+		ira.setAccountHolder(ah);
+		irarepo.save(ira);
+		return ira;
+	}
+	public RothIRA postRothIRA(RothIRA ira, Integer id) {
+		AccountHolder ah = getById(id);
+		ah.setRothIRA(ira);
+		ira.setAccountHolder(ah);
+		RothIRARepo.save(ira);
+		return ira;
+	}
+	public RolloverIRA postRolloverIRA(RolloverIRA ira, Integer id) {
+		AccountHolder ah = getById(id);
+		ah.setRollOverIRA(ira);
+		ira.setAccountHolder(ah);
+		RollIRA.save(ira);
+		return ira;
+	}
+	
 	public DBAChecking postDBACheckingAccount(DBAChecking dbacheckingAccount, Integer id)
 			throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
 		AccountHolder ah = getById(id);
-		if (ah.getDBACheckingAccounts().size() >= 3) {
+		if (ah.getDbaCheckings().size() >= 3) {
 			throw new ToManyAccountsException("can only have 3 DBA checking accounts ");
 		}
 		if (ah.getCombinedBalance() + dbacheckingAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
 		}
-		ah.setDBACheckingAccounts((Arrays.asList(dbacheckingAccount)));
+		ah.setDbaCheckings((Arrays.asList(dbacheckingAccount)));
 		dbacheckingAccount.setAccountHolder(ah);
 		DBACheckingRepo.save(dbacheckingAccount);
 		return dbacheckingAccount;
 	}
 	
 	public List<DBAChecking> getDBACheckingAccountsById(@PathVariable Integer id) {
-		return getById(id).getDBACheckingAccounts();
+		return getById(id).getDbaCheckings();
 	}
-
+	public IRA getiraById(@PathVariable Integer id) {
+		return getById(id).getIra();
+	}
+	public RothIRA getRothIraById(@PathVariable Integer id) {
+		return getById(id).getRothIRA();
+	}
+	public RolloverIRA getRolloverIRAById(@PathVariable Integer id) {
+		return getById(id).getRollOverIRA();
+	}
+	
 	public CheckingAccount getCheckingAccountsById(@PathVariable Integer id) {
 		return getById(id).getCheckingAccounts();
 	}
@@ -246,13 +266,13 @@ public class MeritBankService {
 	public DBAChecking postMyDBACheckingAccount(HttpServletRequest request,DBAChecking dbacheckingAccount)
 			throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
 		AccountHolder ah = getMyAccountInfo(request);
-		if (ah.getDBACheckingAccounts().size() >= 3) {
+		if (ah.getDbaCheckings().size() >= 3) {
 			throw new ToManyAccountsException("can only have 3 DBA checking accounts ");
 		}
 		if (ah.getCombinedBalance() + dbacheckingAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
 		}
-		ah.setDBACheckingAccounts((Arrays.asList(dbacheckingAccount)));
+		ah.setDbaCheckings((Arrays.asList(dbacheckingAccount)));
 		dbacheckingAccount.setAccountHolder(ah);
 		DBACheckingRepo.save(dbacheckingAccount);
 		return dbacheckingAccount;
@@ -277,7 +297,7 @@ public class MeritBankService {
 	}
 	public List<DBAChecking> getMyDBACheckingAccounts(HttpServletRequest request) {
 		AccountHolder ah = getMyAccountInfo(request);
-		return ah.getDBACheckingAccounts();
+		return ah.getDbaCheckings();
 	}
 	public CDAccount postMyCDAccounts(HttpServletRequest request, CDAccount cDAccount)
 			throws ExceedsCombinedBalanceLimitException {
@@ -303,5 +323,42 @@ public class MeritBankService {
 
 	public List<CDOffering> getCDOfferings() {
 		return cdOfferingRepository.findAll();
+	}
+
+	public IRA postMyIRA(HttpServletRequest request, @Valid IRA ira) {
+		AccountHolder ah = getMyAccountInfo(request);
+		ah.setIra(ira);
+		ira.setAccountHolder(ah);
+		irarepo.save(ira);
+		return ira;
+	}
+	
+	public IRA getMyIRA(HttpServletRequest request) {
+		AccountHolder ah = getMyAccountInfo(request);
+		return ah.getIra();
+	}
+	public RothIRA postMyRothIRA(HttpServletRequest request, @Valid RothIRA RothIRA) {
+		AccountHolder ah = getMyAccountInfo(request);
+		ah.setRothIRA(RothIRA);
+		RothIRA.setAccountHolder(ah);
+		RothIRARepo.save(RothIRA);
+		return RothIRA;
+	}
+	
+	public RothIRA getMyRothIRA(HttpServletRequest request) {
+		AccountHolder ah = getMyAccountInfo(request);
+		return ah.getRothIRA();
+	}
+	public RolloverIRA postMyRolloverIRA(HttpServletRequest request, @Valid RolloverIRA RolloverIRA) {
+		AccountHolder ah = getMyAccountInfo(request);
+		ah.setRollOverIRA(RolloverIRA);
+		RolloverIRA.setAccountHolder(ah);
+		RollIRA.save(RolloverIRA);
+		return RolloverIRA;
+	}
+	
+	public RolloverIRA getMyRolloverIRA(HttpServletRequest request) {
+		AccountHolder ah = getMyAccountInfo(request);
+		return ah.getRollOverIRA();
 	}
 }
