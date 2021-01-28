@@ -184,7 +184,7 @@ public class MeritBankController {
 	}
 	@PreAuthorize("hasAuthority('admin')")
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping(value = "/AccountHolders/{id}/RothIRA")
+	@GetMapping(value = "/AccountHolders/{id}/RolloverIRA")
 	public RolloverIRA getRolloverIRAById(@PathVariable Integer id) throws AccountNotFoundException {
 
 			return meritBankService.getRolloverIRAById(id);
