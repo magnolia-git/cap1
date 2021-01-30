@@ -35,6 +35,7 @@ import com.assignments.assignment7.models.CDAccount;
 import com.assignments.assignment7.models.CDOffering;
 import com.assignments.assignment7.models.CheckingAccount;
 import com.assignments.assignment7.models.DBAChecking;
+import com.assignments.assignment7.models.DepositTransaction;
 import com.assignments.assignment7.models.IRA;
 import com.assignments.assignment7.models.RolloverIRA;
 import com.assignments.assignment7.models.RothIRA;
@@ -46,6 +47,7 @@ import com.assignments.assignment7.util.JwtUtil;
 
 import Exceptions.AccountNotFoundException;
 import Exceptions.ExceedsCombinedBalanceLimitException;
+import Exceptions.NegativeBalanceException;
 import Exceptions.ToManyAccountsException;
 
 @RestController
@@ -361,5 +363,13 @@ public class MeritBankController {
 		return meritBankService.getMyDBACheckingAccounts(request);
 	}
 	
-
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/DBACheckingAccount/Deposit")
+	public DBAChecking postMyDeposit(HttpServletRequest request//,@Valid @RequestBody DBAChecking dbaChecking
+			,@Valid @RequestBody DepositTransaction deposit)
+			throws ExceedsCombinedBalanceLimitException, NegativeBalanceException {
+		
+		return meritBankService.postMyDeposit(request, deposit, "DBACheckingAccount");
+	}
 }

@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -21,15 +22,14 @@ import com.assignments.assignment7.util.JwtUtil;
 import com.assignments.assignment7.models.*;
 import com.assignments.assignment7.repository.*;
 
-
-
 import Exceptions.AccountNotFoundException;
 import Exceptions.ExceedsCombinedBalanceLimitException;
+import Exceptions.NegativeBalanceException;
 import Exceptions.ToManyAccountsException;
 
 @Service
 public class MeritBankService {
-	@Autowired 
+	@Autowired
 	private RolloverIRARepository RollIRA;
 	@Autowired
 	private RothIRARepository RothIRARepo;
@@ -53,6 +53,8 @@ public class MeritBankService {
 	private UserRepository userRepository;
 	@Autowired
 	private RoleRepository roleRepository;
+	@Autowired
+	private DepositTransactionRepository depositRepository;
 	@Autowired
 	private MyUserDetailsService userDetailsService;
 	@Autowired
@@ -146,6 +148,7 @@ public class MeritBankService {
 		irarepo.save(ira);
 		return ira;
 	}
+
 	public RothIRA postRothIRA(RothIRA ira, Integer id) {
 		AccountHolder ah = getById(id);
 		ah.setRothIRA(ira);
@@ -153,6 +156,7 @@ public class MeritBankService {
 		RothIRARepo.save(ira);
 		return ira;
 	}
+
 	public RolloverIRA postRolloverIRA(RolloverIRA ira, Integer id) {
 		AccountHolder ah = getById(id);
 		ah.setRollOverIRA(ira);
@@ -160,7 +164,7 @@ public class MeritBankService {
 		RollIRA.save(ira);
 		return ira;
 	}
-	
+
 	public DBAChecking postDBACheckingAccount(DBAChecking dbacheckingAccount, Integer id)
 			throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
 		AccountHolder ah = getById(id);
@@ -175,20 +179,23 @@ public class MeritBankService {
 		DBACheckingRepo.save(dbacheckingAccount);
 		return dbacheckingAccount;
 	}
-	
+
 	public List<DBAChecking> getDBACheckingAccountsById(@PathVariable Integer id) {
 		return getById(id).getDbaCheckings();
 	}
+
 	public IRA getiraById(@PathVariable Integer id) {
 		return getById(id).getIra();
 	}
+
 	public RothIRA getRothIraById(@PathVariable Integer id) {
 		return getById(id).getRothIRA();
 	}
+
 	public RolloverIRA getRolloverIRAById(@PathVariable Integer id) {
 		return getById(id).getRollOverIRA();
 	}
-	
+
 	public CheckingAccount getCheckingAccountsById(@PathVariable Integer id) {
 		return getById(id).getCheckingAccounts();
 	}
@@ -227,16 +234,16 @@ public class MeritBankService {
 	}
 
 	public AccountHolder getMyAccountInfo(HttpServletRequest request) {
-		final String authorizationHeader = request.getHeader("Authorization");
-
-		String username = null;
-		String jwt = null;
+//		final String authorizationHeader = request.getHeader("Authorization");
+//
+		String username = request.getUserPrincipal().getName();//userDetails.;
+//		String jwt = null;
 		AccountHolder ah = null;
-
-		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-			jwt = authorizationHeader.substring(7);
-			username = jwtUtil.extractUsername(jwt);
-		}
+//
+//		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+//			jwt = authorizationHeader.substring(7);
+//			username = jwtUtil.extractUsername(jwt);
+//		}
 		if (username != null) {
 
 			User user = this.userRepository.findByUsername(username).orElseThrow(null);
@@ -263,7 +270,8 @@ public class MeritBankService {
 		checkingAccountRepository.save(checkingAccount);
 		return checkingAccount;
 	}
-	public DBAChecking postMyDBACheckingAccount(HttpServletRequest request,DBAChecking dbacheckingAccount)
+
+	public DBAChecking postMyDBACheckingAccount(HttpServletRequest request, DBAChecking dbacheckingAccount)
 			throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
 		AccountHolder ah = getMyAccountInfo(request);
 		if (ah.getDbaCheckings().size() >= 3) {
@@ -295,10 +303,12 @@ public class MeritBankService {
 		AccountHolder ah = getMyAccountInfo(request);
 		return ah.getSavingsAccounts();
 	}
+
 	public List<DBAChecking> getMyDBACheckingAccounts(HttpServletRequest request) {
 		AccountHolder ah = getMyAccountInfo(request);
 		return ah.getDbaCheckings();
 	}
+
 	public CDAccount postMyCDAccounts(HttpServletRequest request, CDAccount cDAccount)
 			throws ExceedsCombinedBalanceLimitException {
 
@@ -332,11 +342,12 @@ public class MeritBankService {
 		irarepo.save(ira);
 		return ira;
 	}
-	
+
 	public IRA getMyIRA(HttpServletRequest request) {
 		AccountHolder ah = getMyAccountInfo(request);
 		return ah.getIra();
 	}
+
 	public RothIRA postMyRothIRA(HttpServletRequest request, @Valid RothIRA RothIRA) {
 		AccountHolder ah = getMyAccountInfo(request);
 		ah.setRothIRA(RothIRA);
@@ -344,11 +355,12 @@ public class MeritBankService {
 		RothIRARepo.save(RothIRA);
 		return RothIRA;
 	}
-	
+
 	public RothIRA getMyRothIRA(HttpServletRequest request) {
 		AccountHolder ah = getMyAccountInfo(request);
 		return ah.getRothIRA();
 	}
+
 	public RolloverIRA postMyRolloverIRA(HttpServletRequest request, @Valid RolloverIRA RolloverIRA) {
 		AccountHolder ah = getMyAccountInfo(request);
 		ah.setRollOverIRA(RolloverIRA);
@@ -356,9 +368,35 @@ public class MeritBankService {
 		RollIRA.save(RolloverIRA);
 		return RolloverIRA;
 	}
-	
+
 	public RolloverIRA getMyRolloverIRA(HttpServletRequest request) {
 		AccountHolder ah = getMyAccountInfo(request);
 		return ah.getRollOverIRA();
+	}
+
+	public DBAChecking postMyDeposit(HttpServletRequest request
+			,DepositTransaction deposit, String type)
+			throws ExceedsCombinedBalanceLimitException, NegativeBalanceException {
+		switch (type) {
+		case "DBACheckingAccount":
+			//deposit.setBankAccount( request.getParameter("bankAccount"));
+			deposit.process();
+			
+			//Object test3 = request.getUserPrincipal().getName();
+//			ah.setcDAccounts((Arrays.asList(cDAccount)));
+//			cDAccount.setAccountHolder(ah);
+//			cdAccountRepository.save(cDAccount);
+			break;
+		case "two":
+			System.out.println("two");
+			break;
+		case "three":
+			System.out.println("three");
+			break;
+		default:
+			System.out.println("no match");
+			break;
+		}
+		return null;
 	}
 }

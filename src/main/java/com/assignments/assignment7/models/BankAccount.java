@@ -34,16 +34,14 @@ public abstract class BankAccount {
 	@ManyToOne
 	@JoinColumn(name = "accountHolder_id") 
 	private AccountHolder accountHolder;
-	 
-
 
 	@Min(value = 0, message = "Balance must be atleast zero")
 	double balance;
 	
-	Date openedOn;
-	
+	Date openedOn = new Date(System.currentTimeMillis());;
+
 	public BankAccount() {
-		this.openedOn = new Date(System.currentTimeMillis());
+		super();
 	}
 
 	public Integer getId() {
@@ -72,5 +70,15 @@ public abstract class BankAccount {
 	}
 	public void setOpenedOn(Date openedOn) {
 		this.openedOn = openedOn;
+	}
+
+	public void withdraw(double amount) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void deposit(double amount) {
+		// TODO Auto-generated method stub
+		this.balance += amount;
 	}
 }
