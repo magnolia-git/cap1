@@ -1,6 +1,8 @@
 package com.assignments.assignment7.models;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +15,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -20,6 +23,7 @@ import javax.validation.constraints.Min;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -39,6 +43,13 @@ public abstract class BankAccount {
 	double balance;
 	
 	Date openedOn = new Date(System.currentTimeMillis());;
+	
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dbaChecking", fetch = FetchType.LAZY)
+	private List<Transaction> dbatransactions;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "checking", fetch = FetchType.LAZY)
+	private List<Transaction> checkingtransactions;
 
 	public BankAccount() {
 		super();
@@ -52,7 +63,7 @@ public abstract class BankAccount {
 		this.id = id;
 	}
 	
-	@JsonBackReference
+	@JsonBackReference(value="accountHolder")
 	public AccountHolder getAccountHolder() {
 		return accountHolder;
 	}
@@ -70,6 +81,23 @@ public abstract class BankAccount {
 	}
 	public void setOpenedOn(Date openedOn) {
 		this.openedOn = openedOn;
+	}
+	
+	//@JsonManagedReference(value="dbaChecking")
+	public List<Transaction> getDbatransactions() {
+		return dbatransactions;
+	}
+
+	public void setDbatransactions(List<Transaction> dbatransactions) {
+		this.dbatransactions = new ArrayList<Transaction>(dbatransactions);
+	}
+
+	public List<Transaction> getCheckingtransactions() {
+		return checkingtransactions;
+	}
+
+	public void setCheckingtransactions(List<Transaction> checkingtransactions) {
+		this.checkingtransactions = new ArrayList<Transaction>(checkingtransactions);
 	}
 
 	public void withdraw(double amount) {

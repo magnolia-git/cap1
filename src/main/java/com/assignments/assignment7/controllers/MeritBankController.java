@@ -31,6 +31,7 @@ import com.assignments.assignment7.models.AccountHolder;
 import com.assignments.assignment7.models.AccountHoldersContactDetails;
 import com.assignments.assignment7.models.AuthenticationRequest;
 import com.assignments.assignment7.models.AuthenticationResponse;
+import com.assignments.assignment7.models.BankAccount;
 import com.assignments.assignment7.models.CDAccount;
 import com.assignments.assignment7.models.CDOffering;
 import com.assignments.assignment7.models.CheckingAccount;
@@ -41,6 +42,7 @@ import com.assignments.assignment7.models.RolloverIRA;
 import com.assignments.assignment7.models.RothIRA;
 import com.assignments.assignment7.models.SavingsAccount;
 import com.assignments.assignment7.models.SignupRequest;
+import com.assignments.assignment7.models.Transaction;
 import com.assignments.assignment7.services.MeritBankService;
 import com.assignments.assignment7.services.MyUserDetailsService;
 import com.assignments.assignment7.util.JwtUtil;
@@ -366,10 +368,35 @@ public class MeritBankController {
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = "/Me/DBACheckingAccount/Deposit")
-	public DBAChecking postMyDeposit(HttpServletRequest request//,@Valid @RequestBody DBAChecking dbaChecking
+	public BankAccount postMyDBACheckingDeposit(HttpServletRequest request
 			,@Valid @RequestBody DepositTransaction deposit)
 			throws ExceedsCombinedBalanceLimitException, NegativeBalanceException {
 		
 		return meritBankService.postMyDeposit(request, deposit, "DBACheckingAccount");
 	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/DBACheckingAccount/Deposit")
+	public List<Transaction> getMyDeposit() {
+		return meritBankService.getMyDeposit("DBACheckingAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/CheckingAccount/Deposit")
+	public BankAccount postMyCheckingDeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "CheckingAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/CheckingAccount/Deposit")
+	public List<Transaction> getMyCheckingDeposit(){
+		return meritBankService.getMyDeposit("CheckingAccount");
+	}
+	
+	
 }

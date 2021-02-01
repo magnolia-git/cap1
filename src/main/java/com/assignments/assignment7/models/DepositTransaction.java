@@ -1,6 +1,7 @@
 package com.assignments.assignment7.models;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -28,6 +29,20 @@ public class DepositTransaction extends Transaction{
 	public void process()
 			throws NegativeBalanceException, ExceedsCombinedBalanceLimitException {
 		// TODO Auto-generated method stub
-		bankAccount.deposit(amount);
-	}	
+		if(dbaChecking != null) {
+			location = "dbaChecking";
+			dbaChecking.deposit(amount);
+		}
+		else if(checking != null) {
+			location = "checkingAccount";
+			checking.deposit(amount);
+		}
+		
+	}
+	
+	public void test(BankAccount ba) {
+		ba.deposit(amount);
+	}
+
+	
 }

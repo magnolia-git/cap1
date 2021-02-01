@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import Exceptions.ExceedsCombinedBalanceLimitException;
 import Exceptions.NegativeBalanceException;
 
@@ -16,29 +18,20 @@ public abstract class Transaction {
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name="dBAChecking_id")
-	DBAChecking bankAccount;
+	@JoinColumn(name="bankAccount_id")
+	DBAChecking dbaChecking;
+	
+	@ManyToOne
+	@JoinColumn(name="checking_id")
+	CheckingAccount checking;
 	
 	//BankAccount sourceAccount;
 	double amount;
-	Date transactionDate; 
-
+	Date transactionDate = new Date(); 
+	String location;
 	
-//	Transaction(BankAccount sourceAccount, BankAccount bankAccount, double amount) {
-//		this.sourceAccount = sourceAccount;
-//		this.bankAccount = bankAccount;
-//		this.amount = amount;
-//		this.transactionDate = new Date();
-//	}
-
 	public Transaction() {
 	}
-
-//	Transaction(BankAccount bankAccount, double amount) {
-//		this.bankAccount = bankAccount;
-//		this.amount = amount;
-//		this.transactionDate = new Date();
-//	}
 
 	public abstract void process()
 			throws NegativeBalanceException, ExceedsCombinedBalanceLimitException;
@@ -51,12 +44,22 @@ public abstract class Transaction {
 		this.id = id;
 	}
 
-	public BankAccount getBankAccount() {
-		return bankAccount;
+	@JsonBackReference(value="dbaChecking")
+	public DBAChecking getDbaChecking() {
+		return dbaChecking;
 	}
 
-	public void setBankAccount(DBAChecking bankAccount) {
-		this.bankAccount = bankAccount;
+	public void setDbaChecking(DBAChecking dbaChecking) {
+		this.dbaChecking = dbaChecking;
+	}
+
+	@JsonBackReference(value="checking")
+	public CheckingAccount getChecking() {
+		return checking;
+	}
+
+	public void setChecking(CheckingAccount checking) {
+		this.checking = checking;
 	}
 
 	public double getAmount() {
@@ -73,6 +76,14 @@ public abstract class Transaction {
 
 	public void setTransactionDate(Date transactionDate) {
 		this.transactionDate = transactionDate;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 }

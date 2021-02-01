@@ -92,27 +92,31 @@ public class AccountHolder {
 		this.user = user;
 	}
 
-	@JsonManagedReference
+	@JsonManagedReference(value="accountHolder")
 	public CheckingAccount getCheckingAccounts() {
 		return checkingAccounts;
 	}
 
+	@JsonManagedReference(value="accountHolder")
 	public RolloverIRA getRollOverIRA() {
 		return rollOverIRA;
 	}
-
+	
+	public void setRollOverIRA(RolloverIRA rollOverIRA) {
+		this.rollOverIRA = rollOverIRA;
+	}
+	
+	@JsonManagedReference(value="accountHolder")
 	public RothIRA getRothIRA() {
 		return rothIRA;
 	}
 
-	public void setRollOverIRA(RolloverIRA rollOverIRA) {
-		this.rollOverIRA = rollOverIRA;
-	}
-
+	@JsonManagedReference(value="accountHolder")
 	public IRA getIra() {
 		return ira;
 	}
 
+	@JsonManagedReference(value="accountHolder")
 	public List<DBAChecking> getDbaCheckings() {
 		return dbaCheckings;
 	}
@@ -129,20 +133,18 @@ public class AccountHolder {
 		this.rothIRA = rothIRA;
 	}
 
-
-
 	public void setCheckingAccounts(CheckingAccount checkingAccounts) {
 		this.checkingAccounts = checkingAccounts;
 	}
 
-	@JsonManagedReference
+	@JsonManagedReference(value="accountHolder")
 	public SavingsAccount getSavingsAccounts() {
 		return savingsAccounts;
 	}
 	public void setSavingsAccounts(SavingsAccount savingsAccounts) {
 		this.savingsAccounts = savingsAccounts;
 	}
-	@JsonManagedReference
+	@JsonManagedReference(value="accountHolder")
 	public List<CDAccount> getcDAccounts() {
 		return cDAccounts;
 	}
