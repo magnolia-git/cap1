@@ -419,7 +419,21 @@ public class MeritBankService {
 			} else {
 				new TransactionFailureException();
 			}
-			
+		case "SavingsAccount":
+			SavingsAccount existingSavings;
+			Optional<SavingsAccount> sav = savingsAccountRepository.findById(deposit.getSavings().getId());
+			if (sav.isPresent()) {
+				existingSavings = sav.get();
+				deposit.setSavings(existingSavings);
+				deposit.process();
+				savingsAccountRepository.save(existingSavings);
+				
+				depositRepository.save(deposit);
+				return existingSavings;
+				
+			} else {
+				new TransactionFailureException();
+			}
 		case "three":
 			System.out.println("three");
 			break;
@@ -437,6 +451,8 @@ public class MeritBankService {
 		case "CheckingAccount":
 			return depositRepository.findByLocation("checkingAccount");
 			//break;
+		case "SavingsAccount":
+			return depositRepository.findByLocation("savingsAccount");
 		default:
 			break;
 		}

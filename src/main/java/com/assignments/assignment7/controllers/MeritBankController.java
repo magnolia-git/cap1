@@ -398,5 +398,19 @@ public class MeritBankController {
 		return meritBankService.getMyDeposit("CheckingAccount");
 	}
 	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/SavingsAccount/Deposit")
+	public BankAccount postMySavingsDeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "SavingsAccount");
+	}
 	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/SavingsAccount/Deposit")
+	public List<Transaction> getMySavingsDeposit(){
+		return meritBankService.getMyDeposit("SavingsAccount");
+	}
 }

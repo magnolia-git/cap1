@@ -37,7 +37,10 @@ public class DepositTransaction extends Transaction{
 			location = "checkingAccount";
 			checking.deposit(amount);
 		}
-		
+		else if(savings != null) {
+			location = "savingsAccount";
+			savings.deposit(amount);
+		}
 	}
 	
 	public void test(BankAccount ba) {

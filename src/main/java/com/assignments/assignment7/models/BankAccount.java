@@ -50,6 +50,9 @@ public abstract class BankAccount {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "checking", fetch = FetchType.LAZY)
 	private List<Transaction> checkingtransactions;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "savings", fetch = FetchType.LAZY)
+	private List<Transaction> savingstransactions;
 
 	public BankAccount() {
 		super();
@@ -98,6 +101,14 @@ public abstract class BankAccount {
 
 	public void setCheckingtransactions(List<Transaction> checkingtransactions) {
 		this.checkingtransactions = new ArrayList<Transaction>(checkingtransactions);
+	}
+
+	public List<Transaction> getSavingstransactions() {
+		return savingstransactions;
+	}
+
+	public void setSavingstransactions(List<Transaction> savingstransactions) {
+		this.savingstransactions = new ArrayList<Transaction>(savingstransactions);
 	}
 
 	public void withdraw(double amount) {

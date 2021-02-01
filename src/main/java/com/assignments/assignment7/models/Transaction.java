@@ -25,6 +25,10 @@ public abstract class Transaction {
 	@JoinColumn(name="checking_id")
 	CheckingAccount checking;
 	
+	@ManyToOne
+	@JoinColumn(name="savings_id")
+	SavingsAccount savings;
+	
 	//BankAccount sourceAccount;
 	double amount;
 	Date transactionDate = new Date(); 
@@ -60,6 +64,15 @@ public abstract class Transaction {
 
 	public void setChecking(CheckingAccount checking) {
 		this.checking = checking;
+	}
+
+	@JsonBackReference(value="savings")
+	public SavingsAccount getSavings() {
+		return savings;
+	}
+
+	public void setSavings(SavingsAccount savings) {
+		this.savings = savings;
 	}
 
 	public double getAmount() {
