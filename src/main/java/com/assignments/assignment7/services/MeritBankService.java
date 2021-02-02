@@ -58,6 +58,8 @@ public class MeritBankService {
 	private RoleRepository roleRepository;
 	@Autowired
 	private DepositTransactionRepository depositRepository;
+	@Autowired 
+	private WithdrawTransactionRepository withdrawRepository;
 	@Autowired
 	private MyUserDetailsService userDetailsService;
 	@Autowired
@@ -509,5 +511,125 @@ public class MeritBankService {
 //			break;
 //		}
 		//return null;
+	}
+	////////////////////////////////////////
+	
+	public BankAccount postMyWithdrawl(HttpServletRequest request, WithdrawTransaction withdraw, String type)
+			throws ExceedsCombinedBalanceLimitException, NegativeBalanceException {
+		switch (type) {
+		case "DBACheckingAccount":
+			DBAChecking existingDBA;
+			Optional<DBAChecking> dba = DBACheckingRepo.findById(withdraw.getDbaChecking().getId());
+			if (dba != null) {
+				existingDBA = dba.get();
+				withdraw.setDbaChecking(existingDBA);
+				withdraw.process();
+				DBACheckingRepo.save(existingDBA);
+				
+				withdrawRepository.save(withdraw);
+				return existingDBA;
+			}
+			else {
+				new TransactionFailureException();
+			}
+			break;
+		case "CheckingAccount":
+			CheckingAccount existingChecking;
+			Optional<CheckingAccount> check = checkingAccountRepository.findById(withdraw.getChecking().getId());
+			if (check.isPresent()) {
+				existingChecking = check.get();
+				withdraw.setChecking(existingChecking);
+				withdraw.process();
+				checkingAccountRepository.save(existingChecking);
+				
+				withdrawRepository.save(withdraw);
+				return existingChecking;
+				
+			} else {
+				new TransactionFailureException();
+			}
+		case "SavingsAccount":
+			SavingsAccount existingSavings;
+			Optional<SavingsAccount> sav = savingsAccountRepository.findById(withdraw.getSavings().getId());
+			if (sav.isPresent()) {
+				existingSavings = sav.get();
+				withdraw.setSavings(existingSavings);
+				withdraw.process();
+				savingsAccountRepository.save(existingSavings);
+				
+				withdrawRepository.save(withdraw);
+				return existingSavings;
+				
+			} else {
+				new TransactionFailureException();
+			}
+		case "CDAccount":
+			CDAccount existingCDAccount;
+			Optional<CDAccount> cda = cdAccountRepository.findById(withdraw.getCdAccount().getId());
+			if (cda.isPresent()) {
+				existingCDAccount = cda.get();
+				withdraw.setCdAccount(existingCDAccount);
+				withdraw.process();
+				cdAccountRepository.save(existingCDAccount);
+				
+				withdrawRepository.save(withdraw);
+				return existingCDAccount;
+				
+			} else {
+				new TransactionFailureException();
+			}
+		case "IRA":
+			IRA existingIRA;
+			Optional<IRA> ira = irarepo.findById(withdraw.getIra().getId());
+			if (ira.isPresent()) {
+				existingIRA = ira.get();
+				withdraw.setIra(existingIRA);
+				withdraw.process();
+				irarepo.save(existingIRA);
+				
+				withdrawRepository.save(withdraw);
+				return existingIRA;
+				
+			} else {
+				new TransactionFailureException();
+			}
+		case "RothIRA":
+			RothIRA existingRothIRA;
+			Optional<RothIRA> rothIRA = RothIRARepo.findById(withdraw.getRothIRA().getId());
+			if (rothIRA.isPresent()) {
+				existingRothIRA = rothIRA.get();
+				withdraw.setRothIRA(existingRothIRA);
+				withdraw.process();
+				RothIRARepo.save(existingRothIRA);
+				
+				withdrawRepository.save(withdraw);
+				return existingRothIRA;
+				
+			} else {
+				new TransactionFailureException();
+			}
+		case "RolloverIRA":
+			RolloverIRA existingRolloverIRA;
+			Optional<RolloverIRA> rolloverIRA = RollIRA.findById(withdraw.getRolloverIRA().getId());
+			if (rolloverIRA.isPresent()) {
+				existingRolloverIRA = rolloverIRA.get();
+				withdraw.setRolloverIRA(existingRolloverIRA);
+				withdraw.process();
+				RollIRA.save(existingRolloverIRA);
+				
+				withdrawRepository.save(withdraw);
+				return existingRolloverIRA;
+				
+			} else {
+				new TransactionFailureException();
+			}
+		default:
+			new TransactionFailureException();
+		}
+		return null;
+		
+	}
+	public List<Transaction> getMyWithdrawl(String location) {
+		return withdrawRepository.findByLocation(location);
 	}
 }
