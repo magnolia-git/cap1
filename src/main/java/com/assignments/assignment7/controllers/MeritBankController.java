@@ -43,6 +43,7 @@ import com.assignments.assignment7.models.RothIRA;
 import com.assignments.assignment7.models.SavingsAccount;
 import com.assignments.assignment7.models.SignupRequest;
 import com.assignments.assignment7.models.Transaction;
+import com.assignments.assignment7.models.WithdrawTransaction;
 import com.assignments.assignment7.services.MeritBankService;
 import com.assignments.assignment7.services.MyUserDetailsService;
 import com.assignments.assignment7.util.JwtUtil;
@@ -413,4 +414,188 @@ public class MeritBankController {
 	public List<Transaction> getMySavingsDeposit(){
 		return meritBankService.getMyDeposit("SavingsAccount");
 	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/CDAccount/Deposit")
+	public BankAccount postMyCDAccountDeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "CDAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/CDAccount/Deposit")
+	public List<Transaction> getMyCDAccountDeposit(){
+		return meritBankService.getMyDeposit("CDAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/IRA/Deposit")
+	public BankAccount postMyIRADeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "IRA");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/IRA/Deposit")
+	public List<Transaction> getMyIRADeposit(){
+		return meritBankService.getMyDeposit("IRA");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/RothIRA/Deposit")
+	public BankAccount postMyRothIRADeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "RothIRA");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/RothIRA/Deposit")
+	public List<Transaction> getMyRothIRADeposit(){
+		return meritBankService.getMyDeposit("RothIRA");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/RolloverIRA/Deposit")
+	public BankAccount postMyRolloverIRADeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "RolloverIRA");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/RolloverIRA/Deposit")
+	public List<Transaction> getMyRolloverIRADeposit(){
+		return meritBankService.getMyDeposit("RolloverIRA");
+	}
+	
+	
+	
+	
+	///////////////////
+	
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/DBACheckingAccount/Withdraw")
+	public BankAccount postMyDBACheckingWithdraw(HttpServletRequest request
+			,@Valid @RequestBody WithdrawTransaction withdraw)
+			throws ExceedsCombinedBalanceLimitException, NegativeBalanceException {
+		
+		return meritBankService.postMyWithdraw(request, withdraw, "DBACheckingAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/DBACheckingAccount/Withdraw")
+	public List<Transaction> getMyDeposit() {
+		return meritBankService.getMyWithdrawl("DBACheckingAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/CheckingAccount/Withdraw")
+	public BankAccount postMyCheckingDeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "CheckingAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/CheckingAccount/Withdraw")
+	public List<Transaction> getMyCheckingDeposit(){
+		return meritBankService.getMyDeposit("CheckingAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/SavingsAccount/Withdraw")
+	public BankAccount postMySavingsDeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "SavingsAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/SavingsAccount/Deposit")
+	public List<Transaction> getMySavingsDeposit(){
+		return meritBankService.getMyDeposit("SavingsAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/CDAccount/Deposit")
+	public BankAccount postMyCDAccountDeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "CDAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/CDAccount/Deposit")
+	public List<Transaction> getMyCDAccountDeposit(){
+		return meritBankService.getMyDeposit("CDAccount");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/IRA/Deposit")
+	public BankAccount postMyIRADeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "IRA");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/IRA/Deposit")
+	public List<Transaction> getMyIRADeposit(){
+		return meritBankService.getMyDeposit("IRA");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/RothIRA/Deposit")
+	public BankAccount postMyRothIRADeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "RothIRA");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/RothIRA/Deposit")
+	public List<Transaction> getMyRothIRADeposit(){
+		return meritBankService.getMyDeposit("RothIRA");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/Me/RolloverIRA/Deposit")
+	public BankAccount postMyRolloverIRADeposit(HttpServletRequest request,
+			@Valid @RequestBody DepositTransaction deposit)
+		throws ExceedsCombinedBalanceLimitException, NegativeBalanceException{
+		return meritBankService.postMyDeposit(request, deposit, "RolloverIRA");
+	}
+	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/RolloverIRA/Deposit")
+	public List<Transaction> getMyRolloverIRADeposit(){
+		return meritBankService.getMyDeposit("RolloverIRA");
+	}
+	
 }

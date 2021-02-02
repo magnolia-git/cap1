@@ -11,9 +11,7 @@ import Exceptions.NegativeBalanceException;
 @Entity(name = "WithdrawTransaction")
 @Table(name = "WithdrawTransaction")
 public class WithdrawTransaction extends Transaction{
-	
-	private String reason = "Withdraw";
-	
+
 	public WithdrawTransaction() {
 		super();
 	}

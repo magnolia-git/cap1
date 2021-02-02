@@ -54,6 +54,18 @@ public abstract class BankAccount {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "savings", fetch = FetchType.LAZY)
 	private List<Transaction> savingstransactions;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "cdAccount", fetch = FetchType.LAZY)
+	private List<Transaction> cdAccoountTransactions;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "ira", fetch = FetchType.LAZY)
+	private List<Transaction> iraTransactions;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "rothIRA", fetch = FetchType.LAZY)
+	private List<Transaction> rothIRATransactions;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "rolloverIRA", fetch = FetchType.LAZY)
+	private List<Transaction> rolloverIRATransactions;
+	
 	public BankAccount() {
 		super();
 	}
@@ -111,13 +123,43 @@ public abstract class BankAccount {
 		this.savingstransactions = new ArrayList<Transaction>(savingstransactions);
 	}
 
+	public List<Transaction> getCdAccoountTransactions() {
+		return cdAccoountTransactions;
+	}
+
+	public void setCdAccoountTransactions(List<Transaction> cdAccoountTransactions) {
+		this.cdAccoountTransactions = new ArrayList<Transaction>(cdAccoountTransactions);
+	}
+
+	public List<Transaction> getIraTransactions() {
+		return iraTransactions;
+	}
+
+	public void setIraTransactions(List<Transaction> iraTransactions) {
+		this.iraTransactions = new ArrayList<Transaction>(iraTransactions);
+	}
+
+	public List<Transaction> getRothIRATransactions() {
+		return rothIRATransactions;
+	}
+
+	public void setRothIRATransactions(List<Transaction> rothIRATransactions) {
+		this.rothIRATransactions = new ArrayList<Transaction>(rothIRATransactions);
+	}
+
+	public List<Transaction> getRolloverIRATransactions() {
+		return rolloverIRATransactions;
+	}
+
+	public void setRolloverIRATransactions(List<Transaction> rolloverIRATransactions) {
+		this.rolloverIRATransactions = new ArrayList<Transaction>(rolloverIRATransactions);
+	}
+
 	public void withdraw(double amount) {
-		// TODO Auto-generated method stub
-		
+		this.balance -= amount;
 	}
 
 	public void deposit(double amount) {
-		// TODO Auto-generated method stub
 		this.balance += amount;
 	}
 }

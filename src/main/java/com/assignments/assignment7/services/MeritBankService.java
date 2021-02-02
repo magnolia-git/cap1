@@ -381,7 +381,6 @@ public class MeritBankService {
 			throws ExceedsCombinedBalanceLimitException, NegativeBalanceException {
 		switch (type) {
 		case "DBACheckingAccount":
-			// deposit.setBankAccount( request.getParameter("bankAccount"));
 			DBAChecking existingDBA;
 			Optional<DBAChecking> dba = DBACheckingRepo.findById(deposit.getDbaChecking().getId());
 			if (dba != null) {
@@ -396,13 +395,6 @@ public class MeritBankService {
 			else {
 				new TransactionFailureException();
 			}
-			// deposit.setBankAccount(getMyAccountInfo(request).getDbaCheckings().get(0));
-			
-			// Object test3 = request.getUserPrincipal().getName();
-//			ah.setcDAccounts((Arrays.asList(cDAccount)));
-//			cDAccount.setAccountHolder(ah);
-//			cdAccountRepository.save(cDAccount);
-			
 			break;
 		case "CheckingAccount":
 			CheckingAccount existingChecking;
@@ -434,28 +426,88 @@ public class MeritBankService {
 			} else {
 				new TransactionFailureException();
 			}
-		case "three":
-			System.out.println("three");
-			break;
+		case "CDAccount":
+			CDAccount existingCDAccount;
+			Optional<CDAccount> cda = cdAccountRepository.findById(deposit.getCdAccount().getId());
+			if (cda.isPresent()) {
+				existingCDAccount = cda.get();
+				deposit.setCdAccount(existingCDAccount);
+				deposit.process();
+				cdAccountRepository.save(existingCDAccount);
+				
+				depositRepository.save(deposit);
+				return existingCDAccount;
+				
+			} else {
+				new TransactionFailureException();
+			}
+		case "IRA":
+			IRA existingIRA;
+			Optional<IRA> ira = irarepo.findById(deposit.getIra().getId());
+			if (ira.isPresent()) {
+				existingIRA = ira.get();
+				deposit.setIra(existingIRA);
+				deposit.process();
+				irarepo.save(existingIRA);
+				
+				depositRepository.save(deposit);
+				return existingIRA;
+				
+			} else {
+				new TransactionFailureException();
+			}
+		case "RothIRA":
+			RothIRA existingRothIRA;
+			Optional<RothIRA> rothIRA = RothIRARepo.findById(deposit.getRothIRA().getId());
+			if (rothIRA.isPresent()) {
+				existingRothIRA = rothIRA.get();
+				deposit.setRothIRA(existingRothIRA);
+				deposit.process();
+				RothIRARepo.save(existingRothIRA);
+				
+				depositRepository.save(deposit);
+				return existingRothIRA;
+				
+			} else {
+				new TransactionFailureException();
+			}
+		case "RolloverIRA":
+			RolloverIRA existingRolloverIRA;
+			Optional<RolloverIRA> rolloverIRA = RollIRA.findById(deposit.getRolloverIRA().getId());
+			if (rolloverIRA.isPresent()) {
+				existingRolloverIRA = rolloverIRA.get();
+				deposit.setRolloverIRA(existingRolloverIRA);
+				deposit.process();
+				RollIRA.save(existingRolloverIRA);
+				
+				depositRepository.save(deposit);
+				return existingRolloverIRA;
+				
+			} else {
+				new TransactionFailureException();
+			}
 		default:
-			System.out.println("no match");
-			break;
+			new TransactionFailureException();
 		}
 		return null;
+		
 	}
 	public List<Transaction> getMyDeposit(String location) {
-		switch (location) {
-		case "DBACheckingAccount":
-			return depositRepository.findByLocation("dbaChecking");
-			//break;
-		case "CheckingAccount":
-			return depositRepository.findByLocation("checkingAccount");
-			//break;
-		case "SavingsAccount":
-			return depositRepository.findByLocation("savingsAccount");
-		default:
-			break;
-		}
-		return null;
+		return depositRepository.findByLocation(location);
+//		switch (location) {
+//		case "DBACheckingAccount":
+//			return depositRepository.findByLocation("dbaChecking");
+//			//break;
+//		case "CheckingAccount":
+//			return depositRepository.findByLocation("checkingAccount");
+//			//break;
+//		case "SavingsAccount":
+//			return depositRepository.findByLocation("savingsAccount");
+//		case "CDAccount":
+//			return depositRepository.findByLocation("cdAccount");
+//		default:
+//			break;
+//		}
+		//return null;
 	}
 }
