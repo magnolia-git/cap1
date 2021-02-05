@@ -1,5 +1,6 @@
 package com.assignments.assignment7.models;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import javax.persistence.CascadeType;
@@ -42,6 +43,8 @@ public class AccountHolder {
 	@NotNull(message = "SSN can not be null")
 	@NotBlank(message = "SSN can not be blank")
 	String SSN;
+	
+	LocalDate birthDate;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private RolloverIRA rollOverIRA;
@@ -187,6 +190,14 @@ public class AccountHolder {
 		return this;
 	}
 
+	public LocalDate getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
+	}
+
 	public double getCheckingBalance() {
 		double totalBalance = 0;
 		if (checkingAccounts != null) {
@@ -224,5 +235,19 @@ public class AccountHolder {
 	}
 	public double getCombinedBalance() {
 		return getCheckingBalance() + getSavingsBalance() + getCdbalance();
+	}
+	
+	public List<BankAccount> getAllAccounts(){
+		List<BankAccount> allAccount = new ArrayList<BankAccount>();
+		allAccount.add(getCheckingAccounts());
+		allAccount.add(getSavingsAccounts());
+		allAccount.add(getIra());
+		allAccount.add(getRothIRA());
+		allAccount.add(getRollOverIRA());
+		for(BankAccount ba : getcDAccounts())
+			allAccount.add(ba);
+		for(BankAccount ba : getDbaCheckings())
+			allAccount.add(ba);
+		return allAccount;
 	}
 }

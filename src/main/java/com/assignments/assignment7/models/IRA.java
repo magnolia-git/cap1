@@ -14,6 +14,7 @@ public class IRA extends BankAccount{
 
 	public IRA() {
 		super();
+		typeOfAccount = "IRA";
 	}
 
 	public double getInterestRate() {

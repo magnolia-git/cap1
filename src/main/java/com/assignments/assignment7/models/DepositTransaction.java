@@ -20,7 +20,7 @@ public class DepositTransaction extends Transaction{
 	@Override
 	public void process()
 			throws NegativeBalanceException, ExceedsCombinedBalanceLimitException {
-		// TODO Auto-generated method stub
+		type = "Deposit";
 		if(dbaChecking != null) {
 			location = "DBACheckingAccount";
 			dbaChecking.deposit(amount);

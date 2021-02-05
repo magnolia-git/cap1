@@ -66,6 +66,14 @@ public abstract class BankAccount {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "rolloverIRA", fetch = FetchType.LAZY)
 	private List<Transaction> rolloverIRATransactions;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "targetAccount", fetch = FetchType.LAZY)
+	private List<Transaction> targetAccountTransactions;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "sourceAccount", fetch = FetchType.LAZY)
+	private List<Transaction> sourceAccountTransactions;
+	
+	String typeOfAccount;
+	
 	public BankAccount() {
 		super();
 	}
@@ -153,6 +161,30 @@ public abstract class BankAccount {
 
 	public void setRolloverIRATransactions(List<Transaction> rolloverIRATransactions) {
 		this.rolloverIRATransactions = new ArrayList<Transaction>(rolloverIRATransactions);
+	}
+
+	public List<Transaction> getTargetAccountTransactions() {
+		return targetAccountTransactions;
+	}
+
+	public void setTargetAccountTransactions(List<Transaction> targetAccountTransactions) {
+		this.targetAccountTransactions = new ArrayList<Transaction>(targetAccountTransactions) ;
+	}
+
+	public List<Transaction> getSourceAccountTransactions() {
+		return sourceAccountTransactions;
+	}
+
+	public void setSourceAccountTransactions(List<Transaction> sourceAccountTransactions) {
+		this.sourceAccountTransactions =  new ArrayList<Transaction>(sourceAccountTransactions) ; 
+	}
+
+	public String getTypeOfAccount() {
+		return typeOfAccount;
+	}
+
+	public void setTypeOfAccount(String typeOfAccount) {
+		this.typeOfAccount = typeOfAccount;
 	}
 
 	public void withdraw(double amount) {

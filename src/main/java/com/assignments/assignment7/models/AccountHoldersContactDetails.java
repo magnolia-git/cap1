@@ -20,12 +20,10 @@ public class AccountHoldersContactDetails {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "account_holders_contact_details_id")
 	Integer id;
-	//String email;
-	Integer phoneNumber;
+	String email;
+	//Integer phoneNumber;
 	
 	public AccountHoldersContactDetails() {
-//		this.email = "";
-//		this.phoneNumber = 0;
 	}
 
 	public Integer getId() {
@@ -37,30 +35,14 @@ public class AccountHoldersContactDetails {
 		return this;
 	}
 
-//	public String getEmail() {
-//		return email;
-//	}
-//
-//	public AccountHoldersContactDetails setEmail(String email) {
-//		this.email = email;
-//		return this;
-//	}
-
-	public Integer getPhoneNumber() {
-		return phoneNumber;
+	public String getEmail() {
+		return email;
 	}
 
-	public AccountHoldersContactDetails setPhoneNumber(Integer phoneNumber) {
-		this.phoneNumber = phoneNumber;
-		return this;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-//	public AccountHolder getAccountHolder() {
-//		return accountHolder;
-//	}
-//
-//	public AccountHoldersContactDetails setAccountHolder(AccountHolder accountHolder) {
-//		this.accountHolder = accountHolder;
-//		return this;
-//	}
+
+
 }

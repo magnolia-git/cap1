@@ -14,6 +14,8 @@ public class RothIRA extends BankAccount{
 
 	public RothIRA() {
 		super();
+		typeOfAccount = "RothIRA";
+
 	}
 
 	public double getInterestRate() {

@@ -19,6 +19,7 @@ public class SavingsAccount extends BankAccount {
 
 	public SavingsAccount() {
 		super();
+		typeOfAccount = "SavingsAccount";
 	}
 
 	public double getInterestRate() {

@@ -11,8 +11,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name="Users")
 public class User {
 
-	//need to implement user details and overide get authorities 
-	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "users_id")

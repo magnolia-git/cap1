@@ -1,26 +1,23 @@
 package com.assignments.assignment7.models;
-
-
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import Exceptions.ExceedsCombinedBalanceLimitException;
 import Exceptions.NegativeBalanceException;
 
+@Entity(name = "TransferTransaction")
+@Table(name = "TransferTransaction")
 public class TransferTransaction extends Transaction{
 
-//	TransferTransaction(BankAccount bankAccount, double amount) {
-//		super(bankAccount, amount);
-//		// TODO Auto-generated constructor stub
-//	}
-
-	private double amount;
-	private BankAccount targetAccount;
-	private BankAccount sourceAccount;
-
-//	 public TransferTransaction(BankAccount sourceAccount, BankAccount targetAccount, double amount) {
-//		super(sourceAccount, amount);
-//		
-//	}
+//	BankAccount targetAccount;
+//	BankAccount sourceAccount;
+//	
+	Integer targetAccountID;
+	Integer sourceAccountID;
 
 	public TransferTransaction() {
 		super();
@@ -40,9 +37,50 @@ public class TransferTransaction extends Transaction{
 //			throw new ExceedsFraudSuspicionLimitException("WARNING! We are sorry this transaction can not completed");
 //		}
 		else {
-			System.out.println("TRANSACTION AMOUNT:");
+			//System.out.println("TRANSACTION AMOUNT:");
+			type = "Transfer";
 			sourceAccount.withdraw(amount);
 			targetAccount.deposit(amount);
 		}
 	}
+
+	public BankAccount getTargetAccount() {
+		return targetAccount;
+	}
+
+	public void setTargetAccount(BankAccount targetAccount) {
+		this.targetAccount = targetAccount;
+	}
+
+	public BankAccount getSourceAccount() {
+		return sourceAccount;
+	}
+
+	public void setSourceAccount(BankAccount sourceAccount) {
+		this.sourceAccount = sourceAccount;
+	}
+
+	public Integer getTargetAccountID() {
+		return targetAccountID;
+	}
+
+	public void setTargetAccountID(Integer targetAccountID) {
+		this.targetAccountID = targetAccountID;
+	}
+
+	public Integer getSourceAccountID() {
+		return sourceAccountID;
+	}
+
+	public void setSourceAccountID(Integer sourceAccountID) {
+		this.sourceAccountID = sourceAccountID;
+	}
+
+	public List<BankAccount> getSourceAndTransferAccounts(){
+		List<BankAccount> sourceAndTransfer = new ArrayList<BankAccount>();
+		sourceAndTransfer.add(this.sourceAccount);
+		sourceAndTransfer.add(this.targetAccount);
+		return sourceAndTransfer;
+	}
+
 }

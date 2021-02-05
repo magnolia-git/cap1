@@ -45,10 +45,18 @@ public abstract class Transaction {
 	@JoinColumn(name="rolloverIRA_id")
 	RolloverIRA rolloverIRA;
 	
+	@ManyToOne
+	@JoinColumn(name="targetAccount_id")
+	BankAccount targetAccount;
+	@ManyToOne
+	@JoinColumn(name="sourceAccount_id")
+	BankAccount sourceAccount;
+	
 	//BankAccount sourceAccount;
 	double amount;
 	Date transactionDate = new Date(); 
 	String location;
+    String type;
 	
 	public Transaction() {
 	}
@@ -149,6 +157,14 @@ public abstract class Transaction {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

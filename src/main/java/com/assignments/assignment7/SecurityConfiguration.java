@@ -55,13 +55,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //			.antMatchers("/user").hasAnyRole("USER", "ADMIN")
 //			.antMatchers("/").permitAll().and().formLogin();
 		http.csrf().disable()
-		.authorizeRequests().antMatchers("/authenticate").permitAll()
+		.authorizeRequests().antMatchers("/api/authenticate", "/api/authenticate/createUser",
+				"/v2/api-docs",
+				"/configuration/ui",
+				"/swagger-resources/**",
+				"/configuration/security",
+				"/swagger-ui.html",
+				"/webjars/**").permitAll()
 		.anyRequest().authenticated()
 		.and().sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
-	
+
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {

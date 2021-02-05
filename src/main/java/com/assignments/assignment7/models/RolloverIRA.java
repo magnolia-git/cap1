@@ -14,6 +14,7 @@ public class RolloverIRA extends BankAccount{
 
 	public RolloverIRA() {
 		super();
+		typeOfAccount = "RolloverIRA";
 	}
 
 	public double getInterestRate() {

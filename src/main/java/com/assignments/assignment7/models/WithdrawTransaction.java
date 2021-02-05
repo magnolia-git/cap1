@@ -16,17 +16,10 @@ public class WithdrawTransaction extends Transaction{
 		super();
 	}
 
-//	WithdrawTransaction(BankAccount targetAccount, double amount){
-//		super(targetAccount, amount);
-//		this.bankAccount = targetAccount;
-//		this.amount= amount;
-//		this.transactionDate = new Date();
-//		}
-
 	@Override
 	public void process()
 			throws NegativeBalanceException, ExceedsCombinedBalanceLimitException {
-		// TODO Auto-generated method stub
+		type = "Withdraw";
 		if(dbaChecking != null) {
 			location = "DBACheckingAccount";
 			dbaChecking.withdraw(amount);

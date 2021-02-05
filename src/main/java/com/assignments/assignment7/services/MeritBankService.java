@@ -27,8 +27,9 @@ import com.assignments.assignment7.repository.*;
 import Exceptions.AccountNotFoundException;
 import Exceptions.ExceedsCombinedBalanceLimitException;
 import Exceptions.NegativeBalanceException;
-import Exceptions.ToManyAccountsException;
+import Exceptions.TooManyAccountsException;
 import Exceptions.TransactionFailureException;
+import aj.org.objectweb.asm.Type;
 
 @Service
 public class MeritBankService {
@@ -61,15 +62,17 @@ public class MeritBankService {
 	@Autowired 
 	private WithdrawTransactionRepository withdrawRepository;
 	@Autowired
-	private MyUserDetailsService userDetailsService;
-	@Autowired
-	private JwtUtil jwtUtil;
+	private TransferTransactionRepository transferTransactionRepository;
+//	@Autowired
+//	private MyUserDetailsService userDetailsService;
+//	@Autowired
+//	private JwtUtil jwtUtil;
 
 	public ResponseEntity<?> registerUser(SignupRequest signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity.badRequest().body("Error: Username is already taken!");
 		}
-		// Create new user's account
+		// Create new user
 		User user = new User(signUpRequest.getUsername(), signUpRequest.getPassword());
 
 		Set<String> strRoles = signUpRequest.getRole();
@@ -94,12 +97,24 @@ public class MeritBankService {
 					roles.add(userRole);
 				}
 			});
-
 		}
 
 		user.setActive(signUpRequest.isActive());
 		user.setRoles(roles);
 		userRepository.save(user);
+		
+		// Create Account Holder for User
+		AccountHolder ah = new AccountHolder();
+		AccountHoldersContactDetails ahDetails = new AccountHoldersContactDetails();
+		ahDetails.setEmail(signUpRequest.getEmail());
+		ahContactDetailsrepository.save(ahDetails);
+		ah.setFirstName(signUpRequest.getFirstName())
+			.setLastName(signUpRequest.getLastName())
+			.setSSN(signUpRequest.getSsn()).setUser(user);
+		ah.setAccountHoldersContactDetails(ahDetails);
+		ah.setBirthDate(signUpRequest.getBirthDate());
+		accountHolderRepository.save(ah);
+
 
 		return ResponseEntity.ok("User registered successfully!");
 	}
@@ -140,7 +155,7 @@ public class MeritBankService {
 		if (ah.getCombinedBalance() + checkingAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
 		}
-		ah.setCheckingAccounts((checkingAccount));
+		ah.setCheckingAccounts(checkingAccount);
 		checkingAccount.setAccountHolder(ah);
 		checkingAccountRepository.save(checkingAccount);
 		return checkingAccount;
@@ -171,10 +186,10 @@ public class MeritBankService {
 	}
 
 	public DBAChecking postDBACheckingAccount(DBAChecking dbacheckingAccount, Integer id)
-			throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
+			throws ExceedsCombinedBalanceLimitException, TooManyAccountsException {
 		AccountHolder ah = getById(id);
 		if (ah.getDbaCheckings().size() >= 3) {
-			throw new ToManyAccountsException("can only have 3 DBA checking accounts ");
+			throw new TooManyAccountsException("can only have 3 DBA checking accounts ");
 		}
 		if (ah.getCombinedBalance() + dbacheckingAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
@@ -223,10 +238,13 @@ public class MeritBankService {
 	}
 
 	public CDAccount postCDAccount(CDAccount cdAccount, int id)
-			throws AccountNotFoundException, ExceedsCombinedBalanceLimitException {
+			throws AccountNotFoundException, ExceedsCombinedBalanceLimitException, TooManyAccountsException {
 		AccountHolder ah = getById(id);
 		if (ah.getCombinedBalance() + cdAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
+		}
+		if(ah.getcDAccounts().size() >= 1) {
+			throw new TooManyAccountsException("Checking Account Already Exists");
 		}
 		ah.setcDAccounts(Arrays.asList(cdAccount));
 		cdAccount.setAccountHolder(ah);
@@ -264,11 +282,14 @@ public class MeritBankService {
 	}
 
 	public CheckingAccount postMyCheckingAccount(HttpServletRequest request, CheckingAccount checkingAccount)
-			throws ExceedsCombinedBalanceLimitException {
+			throws ExceedsCombinedBalanceLimitException, TooManyAccountsException {
 
 		AccountHolder ah = getMyAccountInfo(request);
 		if (ah.getCombinedBalance() + checkingAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
+		}
+		if(ah.getCheckingAccounts() != null) {
+			throw new TooManyAccountsException("Checking Account Already Exists");
 		}
 		ah.setCheckingAccounts(checkingAccount);
 		checkingAccount.setAccountHolder(ah);
@@ -277,10 +298,10 @@ public class MeritBankService {
 	}
 
 	public DBAChecking postMyDBACheckingAccount(HttpServletRequest request, DBAChecking dbacheckingAccount)
-			throws ExceedsCombinedBalanceLimitException, ToManyAccountsException {
+			throws ExceedsCombinedBalanceLimitException, TooManyAccountsException {
 		AccountHolder ah = getMyAccountInfo(request);
 		if (ah.getDbaCheckings().size() >= 3) {
-			throw new ToManyAccountsException("can only have 3 DBA checking accounts ");
+			throw new TooManyAccountsException("can only have 3 DBA checking accounts ");
 		}
 		if (ah.getCombinedBalance() + dbacheckingAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
@@ -292,11 +313,14 @@ public class MeritBankService {
 	}
 
 	public SavingsAccount postMySavingsAccount(HttpServletRequest request, SavingsAccount savingsAccount)
-			throws ExceedsCombinedBalanceLimitException {
+			throws ExceedsCombinedBalanceLimitException, TooManyAccountsException {
 
 		AccountHolder ah = getMyAccountInfo(request);
 		if (ah.getCombinedBalance() + savingsAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
+		}
+		if(ah.getSavingsAccounts() != null) {
+			throw new TooManyAccountsException("Savings Account Already Exists");
 		}
 		ah.setSavingsAccounts(savingsAccount);
 		savingsAccount.setAccountHolder(ah);
@@ -315,11 +339,14 @@ public class MeritBankService {
 	}
 
 	public CDAccount postMyCDAccounts(HttpServletRequest request, CDAccount cDAccount)
-			throws ExceedsCombinedBalanceLimitException {
+			throws ExceedsCombinedBalanceLimitException, TooManyAccountsException {
 
 		AccountHolder ah = getMyAccountInfo(request);
 		if (ah.getCombinedBalance() + cDAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
+		}
+		if(ah.getcDAccounts().size() >= 1) {
+			throw new TooManyAccountsException("Checking Account Already Exists");
 		}
 		ah.setcDAccounts((Arrays.asList(cDAccount)));
 		cDAccount.setAccountHolder(ah);
@@ -340,8 +367,11 @@ public class MeritBankService {
 		return cdOfferingRepository.findAll();
 	}
 
-	public IRA postMyIRA(HttpServletRequest request, @Valid IRA ira) {
+	public IRA postMyIRA(HttpServletRequest request, @Valid IRA ira) throws TooManyAccountsException {
 		AccountHolder ah = getMyAccountInfo(request);
+		if(ah.getIra() != null) {
+			throw new TooManyAccountsException("Checking Account Already Exists");
+		}
 		ah.setIra(ira);
 		ira.setAccountHolder(ah);
 		irarepo.save(ira);
@@ -353,8 +383,11 @@ public class MeritBankService {
 		return ah.getIra();
 	}
 
-	public RothIRA postMyRothIRA(HttpServletRequest request, @Valid RothIRA RothIRA) {
+	public RothIRA postMyRothIRA(HttpServletRequest request, @Valid RothIRA RothIRA) throws TooManyAccountsException {
 		AccountHolder ah = getMyAccountInfo(request);
+		if(ah.getRothIRA() != null) {
+			throw new TooManyAccountsException("Checking Account Already Exists");
+		}
 		ah.setRothIRA(RothIRA);
 		RothIRA.setAccountHolder(ah);
 		RothIRARepo.save(RothIRA);
@@ -366,8 +399,11 @@ public class MeritBankService {
 		return ah.getRothIRA();
 	}
 
-	public RolloverIRA postMyRolloverIRA(HttpServletRequest request, @Valid RolloverIRA RolloverIRA) {
+	public RolloverIRA postMyRolloverIRA(HttpServletRequest request, @Valid RolloverIRA RolloverIRA) throws TooManyAccountsException {
 		AccountHolder ah = getMyAccountInfo(request);
+		if(ah.getRollOverIRA() != null) {
+			throw new TooManyAccountsException("Checking Account Already Exists");
+		}
 		ah.setRollOverIRA(RolloverIRA);
 		RolloverIRA.setAccountHolder(ah);
 		RollIRA.save(RolloverIRA);
@@ -632,4 +668,56 @@ public class MeritBankService {
 	public List<Transaction> getMyWithdrawl(String location) {
 		return withdrawRepository.findByLocation(location);
 	}
+
+	//TRANSFERS
+	
+	public List<BankAccount> postMyTransfer(HttpServletRequest request, @Valid TransferTransaction transfer)
+			throws NegativeBalanceException, ExceedsCombinedBalanceLimitException, TransactionFailureException {
+		// TODO Auto-generated method stub
+		AccountHolder ah = getMyAccountInfo(request);
+		List<BankAccount> allAccounts = ah.getAllAccounts();
+		String typeOfAccount;
+		for(BankAccount ba : allAccounts) {
+			if(ba.getId() == transfer.getSourceAccountID()) {
+				transfer.setSourceAccount(ba);
+			}
+			if(ba.getId() == transfer.getTargetAccountID()) {
+				transfer.setTargetAccount(ba);
+			}
+		}
+		if(transfer.getSourceAccount() != null && transfer.getTargetAccount() != null)
+			transfer.process();
+		else
+			throw new TransactionFailureException();
+		
+		saveTargetAccountByType(transfer.getTargetAccount().getTypeOfAccount(), transfer);
+		saveSourceAccountByType(transfer.getSourceAccount().getTypeOfAccount(), transfer);
+		transferTransactionRepository.save(transfer);
+		return transfer.getSourceAndTransferAccounts();
+	}
+	public void saveTargetAccountByType(String typeOfAccount, TransferTransaction transfer)	{
+		switch (typeOfAccount) {
+		case "DBAChecking": 
+			DBACheckingRepo.save((DBAChecking) transfer.getTargetAccount());
+			break;
+		case "CheckingAccount":
+			checkingAccountRepository.save((CheckingAccount) transfer.getTargetAccount());
+		default:
+			break;
+		}
+	}
+	public void saveSourceAccountByType(String typeOfAccount, TransferTransaction transfer)	{
+		switch (typeOfAccount) {
+		case "DBAChecking": 
+			DBACheckingRepo.save((DBAChecking) transfer.getSourceAccount());
+			break;
+		case "CheckingAccount":
+			checkingAccountRepository.save((CheckingAccount) transfer.getSourceAccount());
+		default:
+			break;
+		}
+	}
 }
+
+
+

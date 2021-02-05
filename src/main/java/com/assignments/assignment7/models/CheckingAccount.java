@@ -24,6 +24,7 @@ public class CheckingAccount extends BankAccount {
 
 	public CheckingAccount() {
 		super();
+		typeOfAccount = "CheckingAccount";
 	}
 
 	public double getInterestRate() {

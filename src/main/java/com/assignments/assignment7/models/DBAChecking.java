@@ -30,9 +30,10 @@ public class DBAChecking extends BankAccount{
 	@DecimalMin(value = "0.0", inclusive = false, message = "interest rate must be greater than zero")
 	@DecimalMax(value = "1", inclusive = false, message = "interest rate must be less than one")
 	double interestRate = 0.0001;
-
+	
 	public DBAChecking() {
 		super();
+		typeOfAccount = "DBAChecking";
 	}
 
 	public double getInterestRate() {
