@@ -2,20 +2,22 @@ package com.assignments.assignment7.models;
 
 public class AuthenticationRequest {
 
-	private String username;
+	private String userName;
 	private String password;
 	public AuthenticationRequest() {
 
 	}
-	public AuthenticationRequest(String username, String password) {
-		this.username = username;
+	public AuthenticationRequest(String userName, String password) {
+		super();
+		this.userName = userName;
 		this.password = password;
 	}
-	public String getUsername() {
-		return username;
+	
+	public String getUserName() {
+		return userName;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	public String getPassword() {
 		return password;

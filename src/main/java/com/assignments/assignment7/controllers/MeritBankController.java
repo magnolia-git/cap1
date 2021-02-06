@@ -84,12 +84,12 @@ public class MeritBankController {
 			throws Exception {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-					authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+					authenticationRequest.getUserName(), authenticationRequest.getPassword()));
 		} catch (Exception e) {
 			// TODO: handle exception
 			throw new Exception("incorrect username or password", e);
 		}
-		final UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+		final UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUserName());
 		final String jwt = jwtTokenUtil.generateToken(userDetails);
 		return ResponseEntity.ok(new AuthenticationResponse(jwt));
 
