@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -63,17 +64,19 @@ public class MeritBankService {
 	private WithdrawTransactionRepository withdrawRepository;
 	@Autowired
 	private TransferTransactionRepository transferTransactionRepository;
-//	@Autowired
-//	private MyUserDetailsService userDetailsService;
-//	@Autowired
-//	private JwtUtil jwtUtil;
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	@Autowired
+	private MyUserDetailsService myUserDetailsService;
+	@Autowired
+	private JwtUtil jwtTokenUtil;
 
 	public ResponseEntity<?> registerUser(SignupRequest signUpRequest) {
-		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+		if (userRepository.existsByUsername(signUpRequest.getUserName())) {
 			return ResponseEntity.badRequest().body("Error: Username is already taken!");
 		}
 		// Create new user
-		User user = new User(signUpRequest.getUsername(), signUpRequest.getPassword());
+		User user = new User(signUpRequest.getUserName(), signUpRequest.getPassword());
 
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();
@@ -99,7 +102,7 @@ public class MeritBankService {
 			});
 		}
 
-		user.setActive(signUpRequest.isActive());
+		user.setActive(true);
 		user.setRoles(roles);
 		userRepository.save(user);
 		
@@ -115,8 +118,25 @@ public class MeritBankService {
 		ah.setBirthDate(signUpRequest.getBirthDate());
 		accountHolderRepository.save(ah);
 
+		final UserDetails userDetails = myUserDetailsService.loadUserByUsername(user.getUsername());
+		final String jwt = jwtTokenUtil.generateToken(userDetails);
+		return ResponseEntity.ok(new AuthenticationResponse(jwt));
+		
+	}
+	
+	public ResponseEntity<?> createAutheticationToken(@RequestBody AuthenticationRequest authenticationRequest)
+			throws Exception {
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+					authenticationRequest.getUserName(), authenticationRequest.getPassword()));
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new Exception("incorrect username or password", e);
+		}
+		final UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUserName());
+		final String jwt = jwtTokenUtil.generateToken(userDetails);
+		return ResponseEntity.ok(new AuthenticationResponse(jwt));
 
-		return ResponseEntity.ok("User registered successfully!");
 	}
 
 	public AccountHolder addAccountHolder(AccountHolder accountHolder) throws AccountNotFoundException {
