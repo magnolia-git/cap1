@@ -77,16 +77,7 @@ public class MeritBankController {
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)//AUTHENTICATE LOGIN
 	public ResponseEntity<?> createAutheticationToken(@RequestBody AuthenticationRequest authenticationRequest)
 			throws Exception {
-	/*	try {
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-					authenticationRequest.getUserName(), authenticationRequest.getPassword()));
-		} catch (Exception e) {
-			// TODO: handle exception
-			throw new Exception("incorrect username or password", e);
-		}
-		final UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUserName());
-		final String jwt = jwtTokenUtil.generateToken(userDetails);
-		return ResponseEntity.ok(new AuthenticationResponse(jwt));  */
+
 		return meritBankService.createAutheticationToken(authenticationRequest);
 
 	}
@@ -663,6 +654,13 @@ public class MeritBankController {
 	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
 	public List<Transaction> getMyTransfer() {
 		return meritBankService.getMyWithdrawl("DBACheckingAccount");
+	}
+	
+	@RequestMapping(value = "/Me/Delete/{id}", method = RequestMethod.DELETE)//AUTHENTICATE LOGIN
+	public AccountHolder deleteAccountByID(HttpServletRequest request, @PathVariable Integer id) {
+
+		return meritBankService.deleteAccountByID(request, id);
+
 	}
 	
 }

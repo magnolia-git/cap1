@@ -55,7 +55,7 @@ public class AccountHolder {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private IRA ira;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private List<DBAChecking> dbaCheckings;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
@@ -239,11 +239,17 @@ public class AccountHolder {
 	
 	public List<BankAccount> getAllAccounts(){
 		List<BankAccount> allAccount = new ArrayList<BankAccount>();
-		allAccount.add(getCheckingAccounts());
-		allAccount.add(getSavingsAccounts());
-		allAccount.add(getIra());
-		allAccount.add(getRothIRA());
-		allAccount.add(getRollOverIRA());
+		if(getCheckingAccounts() != null)
+			allAccount.add(getCheckingAccounts());
+		if(getCheckingAccounts() != null)
+			allAccount.add(getSavingsAccounts());
+		if(getCheckingAccounts() != null)
+			allAccount.add(getIra());
+		if(getCheckingAccounts() != null)
+			allAccount.add(getRothIRA());
+		if(getCheckingAccounts() != null)
+			allAccount.add(getRollOverIRA());
+
 		for(BankAccount ba : getcDAccounts())
 			allAccount.add(ba);
 		for(BankAccount ba : getDbaCheckings())

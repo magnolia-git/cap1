@@ -59,7 +59,7 @@ public class MeritBankService {
 	private RoleRepository roleRepository;
 	@Autowired
 	private DepositTransactionRepository depositRepository;
-	@Autowired 
+	@Autowired
 	private WithdrawTransactionRepository withdrawRepository;
 	@Autowired
 	private TransferTransactionRepository transferTransactionRepository;
@@ -104,15 +104,14 @@ public class MeritBankService {
 		user.setActive(true);
 		user.setRoles(roles);
 		userRepository.save(user);
-		
+
 		// Create Account Holder for User
 		AccountHolder ah = new AccountHolder();
 		AccountHoldersContactDetails ahDetails = new AccountHoldersContactDetails();
 		ahDetails.setEmail(signUpRequest.getEmail());
 		ahContactDetailsrepository.save(ahDetails);
-		ah.setFirstName(signUpRequest.getFirstName())
-			.setLastName(signUpRequest.getLastName())
-			.setSSN(signUpRequest.getSsn()).setUser(user);
+		ah.setFirstName(signUpRequest.getFirstName()).setLastName(signUpRequest.getLastName())
+				.setSSN(signUpRequest.getSsn()).setUser(user);
 		ah.setAccountHoldersContactDetails(ahDetails);
 		ah.setBirthDate(signUpRequest.getBirthDate());
 		accountHolderRepository.save(ah);
@@ -120,9 +119,9 @@ public class MeritBankService {
 		final UserDetails userDetails = myUserDetailsService.loadUserByUsername(user.getUsername());
 		final String jwt = jwtTokenUtil.generateToken(userDetails);
 		return ResponseEntity.ok(new AuthenticationResponse(jwt));
-		
+
 	}
-	
+
 	public ResponseEntity<?> createAutheticationToken(@RequestBody AuthenticationRequest authenticationRequest)
 			throws Exception {
 		try {
@@ -262,7 +261,7 @@ public class MeritBankService {
 		if (ah.getCombinedBalance() + cdAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
 		}
-		if(ah.getcDAccounts().size() >= 1) {
+		if (ah.getcDAccounts().size() >= 1) {
 			throw new TooManyAccountsException("Checking Account Already Exists");
 		}
 		ah.setcDAccounts(Arrays.asList(cdAccount));
@@ -307,7 +306,7 @@ public class MeritBankService {
 		if (ah.getCombinedBalance() + checkingAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
 		}
-		if(ah.getCheckingAccounts() != null) {
+		if (ah.getCheckingAccounts() != null) {
 			throw new TooManyAccountsException("Checking Account Already Exists");
 		}
 		ah.setCheckingAccounts(checkingAccount);
@@ -338,7 +337,7 @@ public class MeritBankService {
 		if (ah.getCombinedBalance() + savingsAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
 		}
-		if(ah.getSavingsAccounts() != null) {
+		if (ah.getSavingsAccounts() != null) {
 			throw new TooManyAccountsException("Savings Account Already Exists");
 		}
 		ah.setSavingsAccounts(savingsAccount);
@@ -364,7 +363,7 @@ public class MeritBankService {
 		if (ah.getCombinedBalance() + cDAccount.getBalance() > 250000) {
 			throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit");
 		}
-		if(ah.getcDAccounts().size() >= 1) {
+		if (ah.getcDAccounts().size() >= 1) {
 			throw new TooManyAccountsException("Checking Account Already Exists");
 		}
 		ah.setcDAccounts((Arrays.asList(cDAccount)));
@@ -388,7 +387,7 @@ public class MeritBankService {
 
 	public IRA postMyIRA(HttpServletRequest request, @Valid IRA ira) throws TooManyAccountsException {
 		AccountHolder ah = getMyAccountInfo(request);
-		if(ah.getIra() != null) {
+		if (ah.getIra() != null) {
 			throw new TooManyAccountsException("Checking Account Already Exists");
 		}
 		ah.setIra(ira);
@@ -404,7 +403,7 @@ public class MeritBankService {
 
 	public RothIRA postMyRothIRA(HttpServletRequest request, @Valid RothIRA RothIRA) throws TooManyAccountsException {
 		AccountHolder ah = getMyAccountInfo(request);
-		if(ah.getRothIRA() != null) {
+		if (ah.getRothIRA() != null) {
 			throw new TooManyAccountsException("Checking Account Already Exists");
 		}
 		ah.setRothIRA(RothIRA);
@@ -418,9 +417,10 @@ public class MeritBankService {
 		return ah.getRothIRA();
 	}
 
-	public RolloverIRA postMyRolloverIRA(HttpServletRequest request, @Valid RolloverIRA RolloverIRA) throws TooManyAccountsException {
+	public RolloverIRA postMyRolloverIRA(HttpServletRequest request, @Valid RolloverIRA RolloverIRA)
+			throws TooManyAccountsException {
 		AccountHolder ah = getMyAccountInfo(request);
-		if(ah.getRollOverIRA() != null) {
+		if (ah.getRollOverIRA() != null) {
 			throw new TooManyAccountsException("Checking Account Already Exists");
 		}
 		ah.setRollOverIRA(RolloverIRA);
@@ -445,11 +445,10 @@ public class MeritBankService {
 				deposit.setDbaChecking(existingDBA);
 				deposit.process();
 				DBACheckingRepo.save(existingDBA);
-				
+
 				depositRepository.save(deposit);
 				return existingDBA;
-			}
-			else {
+			} else {
 				new TransactionFailureException();
 			}
 			break;
@@ -461,10 +460,10 @@ public class MeritBankService {
 				deposit.setChecking(existingChecking);
 				deposit.process();
 				checkingAccountRepository.save(existingChecking);
-				
+
 				depositRepository.save(deposit);
 				return existingChecking;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -476,10 +475,10 @@ public class MeritBankService {
 				deposit.setSavings(existingSavings);
 				deposit.process();
 				savingsAccountRepository.save(existingSavings);
-				
+
 				depositRepository.save(deposit);
 				return existingSavings;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -491,10 +490,10 @@ public class MeritBankService {
 				deposit.setCdAccount(existingCDAccount);
 				deposit.process();
 				cdAccountRepository.save(existingCDAccount);
-				
+
 				depositRepository.save(deposit);
 				return existingCDAccount;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -506,10 +505,10 @@ public class MeritBankService {
 				deposit.setIra(existingIRA);
 				deposit.process();
 				irarepo.save(existingIRA);
-				
+
 				depositRepository.save(deposit);
 				return existingIRA;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -521,10 +520,10 @@ public class MeritBankService {
 				deposit.setRothIRA(existingRothIRA);
 				deposit.process();
 				RothIRARepo.save(existingRothIRA);
-				
+
 				depositRepository.save(deposit);
 				return existingRothIRA;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -536,10 +535,10 @@ public class MeritBankService {
 				deposit.setRolloverIRA(existingRolloverIRA);
 				deposit.process();
 				RollIRA.save(existingRolloverIRA);
-				
+
 				depositRepository.save(deposit);
 				return existingRolloverIRA;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -547,8 +546,9 @@ public class MeritBankService {
 			new TransactionFailureException();
 		}
 		return null;
-		
+
 	}
+
 	public List<Transaction> getMyDeposit(String location) {
 		return depositRepository.findByLocation(location);
 //		switch (location) {
@@ -565,10 +565,10 @@ public class MeritBankService {
 //		default:
 //			break;
 //		}
-		//return null;
+		// return null;
 	}
 	////////////////////////////////////////
-	
+
 	public BankAccount postMyWithdrawl(HttpServletRequest request, WithdrawTransaction withdraw, String type)
 			throws ExceedsCombinedBalanceLimitException, NegativeBalanceException {
 		switch (type) {
@@ -580,11 +580,10 @@ public class MeritBankService {
 				withdraw.setDbaChecking(existingDBA);
 				withdraw.process();
 				DBACheckingRepo.save(existingDBA);
-				
+
 				withdrawRepository.save(withdraw);
 				return existingDBA;
-			}
-			else {
+			} else {
 				new TransactionFailureException();
 			}
 			break;
@@ -596,10 +595,10 @@ public class MeritBankService {
 				withdraw.setChecking(existingChecking);
 				withdraw.process();
 				checkingAccountRepository.save(existingChecking);
-				
+
 				withdrawRepository.save(withdraw);
 				return existingChecking;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -611,10 +610,10 @@ public class MeritBankService {
 				withdraw.setSavings(existingSavings);
 				withdraw.process();
 				savingsAccountRepository.save(existingSavings);
-				
+
 				withdrawRepository.save(withdraw);
 				return existingSavings;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -626,10 +625,10 @@ public class MeritBankService {
 				withdraw.setCdAccount(existingCDAccount);
 				withdraw.process();
 				cdAccountRepository.save(existingCDAccount);
-				
+
 				withdrawRepository.save(withdraw);
 				return existingCDAccount;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -641,10 +640,10 @@ public class MeritBankService {
 				withdraw.setIra(existingIRA);
 				withdraw.process();
 				irarepo.save(existingIRA);
-				
+
 				withdrawRepository.save(withdraw);
 				return existingIRA;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -656,10 +655,10 @@ public class MeritBankService {
 				withdraw.setRothIRA(existingRothIRA);
 				withdraw.process();
 				RothIRARepo.save(existingRothIRA);
-				
+
 				withdrawRepository.save(withdraw);
 				return existingRothIRA;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -671,10 +670,10 @@ public class MeritBankService {
 				withdraw.setRolloverIRA(existingRolloverIRA);
 				withdraw.process();
 				RollIRA.save(existingRolloverIRA);
-				
+
 				withdrawRepository.save(withdraw);
 				return existingRolloverIRA;
-				
+
 			} else {
 				new TransactionFailureException();
 			}
@@ -682,41 +681,43 @@ public class MeritBankService {
 			new TransactionFailureException();
 		}
 		return null;
-		
+
 	}
+
 	public List<Transaction> getMyWithdrawl(String location) {
 		return withdrawRepository.findByLocation(location);
 	}
 
-	//TRANSFERS
-	
+	// TRANSFERS
+
 	public List<BankAccount> postMyTransfer(HttpServletRequest request, @Valid TransferTransaction transfer)
 			throws NegativeBalanceException, ExceedsCombinedBalanceLimitException, TransactionFailureException {
 		// TODO Auto-generated method stub
 		AccountHolder ah = getMyAccountInfo(request);
 		List<BankAccount> allAccounts = ah.getAllAccounts();
 		String typeOfAccount;
-		for(BankAccount ba : allAccounts) {
-			if(ba.getId() == transfer.getSourceAccountID()) {
+		for (BankAccount ba : allAccounts) {
+			if (ba.getId() == transfer.getSourceAccountID()) {
 				transfer.setSourceAccount(ba);
 			}
-			if(ba.getId() == transfer.getTargetAccountID()) {
+			if (ba.getId() == transfer.getTargetAccountID()) {
 				transfer.setTargetAccount(ba);
 			}
 		}
-		if(transfer.getSourceAccount() != null && transfer.getTargetAccount() != null)
+		if (transfer.getSourceAccount() != null && transfer.getTargetAccount() != null)
 			transfer.process();
 		else
 			throw new TransactionFailureException();
-		
+
 		saveTargetAccountByType(transfer.getTargetAccount().getTypeOfAccount(), transfer);
 		saveSourceAccountByType(transfer.getSourceAccount().getTypeOfAccount(), transfer);
 		transferTransactionRepository.save(transfer);
 		return transfer.getSourceAndTransferAccounts();
 	}
-	public void saveTargetAccountByType(String typeOfAccount, TransferTransaction transfer)	{
+
+	public void saveTargetAccountByType(String typeOfAccount, TransferTransaction transfer) {
 		switch (typeOfAccount) {
-		case "DBAChecking": 
+		case "DBAChecking":
 			DBACheckingRepo.save((DBAChecking) transfer.getTargetAccount());
 			break;
 		case "CheckingAccount":
@@ -739,11 +740,12 @@ public class MeritBankService {
 			break;
 		default:
 			break;
-}
+		}
 	}
-	public void saveSourceAccountByType(String typeOfAccount, TransferTransaction transfer)	{
+
+	public void saveSourceAccountByType(String typeOfAccount, TransferTransaction transfer) {
 		switch (typeOfAccount) {
-		case "DBAChecking": 
+		case "DBAChecking":
 			DBACheckingRepo.save((DBAChecking) transfer.getSourceAccount());
 			break;
 		case "CheckingAccount":
@@ -766,16 +768,18 @@ public class MeritBankService {
 			break;
 		default:
 			break;
-}
+		}
 	}
-	public void deleteAccountByID(HttpServletRequest request, Integer id) {
+
+	public AccountHolder deleteAccountByID(HttpServletRequest request, Integer id) {
 		AccountHolder ah = getMyAccountInfo(request);
 		List<BankAccount> allAccount = ah.getAllAccounts();
-		for(BankAccount ba : allAccount) {
-			if(ba.getId() == id) {
+		for (BankAccount ba : allAccount) {
+			if (ba.getId() == id) {
 				switch (ba.getTypeOfAccount()) {
 				case "DBAChecking":
 					DBACheckingRepo.deleteById(id);
+					//DBACheckingRepo.save(entity);
 					break;
 
 				default:
@@ -783,9 +787,7 @@ public class MeritBankService {
 				}
 			}
 		}
+		return ah;
 
 	}
 }
-
-
-
