@@ -6,6 +6,9 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import Exceptions.ExceedsCombinedBalanceLimitException;
 import Exceptions.NegativeBalanceException;
 
@@ -16,6 +19,7 @@ public class TransferTransaction extends Transaction{
 //	BankAccount targetAccount;
 //	BankAccount sourceAccount;
 //	
+	
 	Integer targetAccountID;
 	Integer sourceAccountID;
 
@@ -43,21 +47,23 @@ public class TransferTransaction extends Transaction{
 		}
 	}
 
-	public BankAccount getTargetAccount() {
-		return targetAccount;
-	}
-
-	public void setTargetAccount(BankAccount targetAccount) {
-		this.targetAccount = targetAccount;
-	}
-
-	public BankAccount getSourceAccount() {
-		return sourceAccount;
-	}
-
-	public void setSourceAccount(BankAccount sourceAccount) {
-		this.sourceAccount = sourceAccount;
-	}
+//	@JsonBackReference(value="targetAccount")
+//	public BankAccount getTargetAccount() {
+//		return targetAccount;
+//	}
+//
+//	public void setTargetAccount(BankAccount targetAccount) {
+//		this.targetAccount = targetAccount;
+//	}
+//
+//	@JsonBackReference(value="sourceAccount")
+//	public BankAccount getSourceAccount() {
+//		return sourceAccount;
+//	}
+//
+//	public void setSourceAccount(BankAccount sourceAccount) {
+//		this.sourceAccount = sourceAccount;
+//	}
 
 	public Integer getTargetAccountID() {
 		return targetAccountID;
@@ -75,6 +81,7 @@ public class TransferTransaction extends Transaction{
 		this.sourceAccountID = sourceAccountID;
 	}
 
+	@JsonIgnore
 	public List<BankAccount> getSourceAndTransferAccounts(){
 		List<BankAccount> sourceAndTransfer = new ArrayList<BankAccount>();
 		sourceAndTransfer.add(this.sourceAccount);

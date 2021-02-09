@@ -46,25 +46,25 @@ public class AccountHolder {
 	
 	LocalDate birthDate;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private RolloverIRA rollOverIRA;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private RothIRA rothIRA;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private IRA ira;
 	
 	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private List<DBAChecking> dbaCheckings;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private CheckingAccount checkingAccounts;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private SavingsAccount savingsAccounts;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "accountHolder", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "accountHolder", fetch = FetchType.LAZY)
 	private List<CDAccount> cDAccounts;
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -241,13 +241,13 @@ public class AccountHolder {
 		List<BankAccount> allAccount = new ArrayList<BankAccount>();
 		if(getCheckingAccounts() != null)
 			allAccount.add(getCheckingAccounts());
-		if(getCheckingAccounts() != null)
+		if(getSavingsAccounts() != null)
 			allAccount.add(getSavingsAccounts());
-		if(getCheckingAccounts() != null)
+		if(getIra() != null)
 			allAccount.add(getIra());
-		if(getCheckingAccounts() != null)
+		if(getRothIRA() != null)
 			allAccount.add(getRothIRA());
-		if(getCheckingAccounts() != null)
+		if(getRollOverIRA() != null)
 			allAccount.add(getRollOverIRA());
 
 		for(BankAccount ba : getcDAccounts())

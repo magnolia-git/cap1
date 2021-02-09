@@ -657,7 +657,7 @@ public class MeritBankController {
 	}
 	
 	@RequestMapping(value = "/Me/Delete/{id}", method = RequestMethod.DELETE)//AUTHENTICATE LOGIN
-	public AccountHolder deleteAccountByID(HttpServletRequest request, @PathVariable Integer id) {
+	public List<BankAccount> deleteAccountByID(HttpServletRequest request, @PathVariable Integer id) {
 
 		return meritBankService.deleteAccountByID(request, id);
 

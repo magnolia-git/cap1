@@ -163,6 +163,7 @@ public abstract class BankAccount {
 		this.rolloverIRATransactions = new ArrayList<Transaction>(rolloverIRATransactions);
 	}
 
+	@JsonManagedReference(value="targetAccount")
 	public List<Transaction> getTargetAccountTransactions() {
 		return targetAccountTransactions;
 	}
@@ -171,6 +172,7 @@ public abstract class BankAccount {
 		this.targetAccountTransactions = new ArrayList<Transaction>(targetAccountTransactions) ;
 	}
 
+	@JsonManagedReference(value="sourceAccount")
 	public List<Transaction> getSourceAccountTransactions() {
 		return sourceAccountTransactions;
 	}

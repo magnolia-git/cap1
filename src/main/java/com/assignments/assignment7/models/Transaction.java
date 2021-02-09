@@ -134,7 +134,25 @@ public abstract class Transaction {
 	public void setRolloverIRA(RolloverIRA rolloverIRA) {
 		this.rolloverIRA = rolloverIRA;
 	}
+	
+	@JsonBackReference(value="targetAccount")
+	public BankAccount getTargetAccount() {
+		return targetAccount;
+	}
 
+	public void setTargetAccount(BankAccount targetAccount) {
+		this.targetAccount = targetAccount;
+	}
+
+	@JsonBackReference(value="sourceAccount")
+	public BankAccount getSourceAccount() {
+		return sourceAccount;
+	}
+
+	public void setSourceAccount(BankAccount sourceAccount) {
+		this.sourceAccount = sourceAccount;
+	}
+	
 	public double getAmount() {
 		return amount;
 	}

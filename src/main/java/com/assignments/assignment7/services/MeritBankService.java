@@ -771,23 +771,49 @@ public class MeritBankService {
 		}
 	}
 
-	public AccountHolder deleteAccountByID(HttpServletRequest request, Integer id) {
+	public List<BankAccount> deleteAccountByID(HttpServletRequest request, Integer id) {
 		AccountHolder ah = getMyAccountInfo(request);
 		List<BankAccount> allAccount = ah.getAllAccounts();
+		Integer deletedAccount=0;
 		for (BankAccount ba : allAccount) {
 			if (ba.getId() == id) {
 				switch (ba.getTypeOfAccount()) {
 				case "DBAChecking":
 					DBACheckingRepo.deleteById(id);
-					//DBACheckingRepo.save(entity);
+					deletedAccount = allAccount.indexOf(ba)+1;
 					break;
-
+				case "CheckingAccount":
+					checkingAccountRepository.deleteById(id);
+					deletedAccount = allAccount.indexOf(ba)+1;
+					break;
+				case "SavingsAccount":
+					savingsAccountRepository.deleteById(id);
+					deletedAccount = allAccount.indexOf(ba)+1;
+					break;
+				case "CDAccount":
+					cdAccountRepository.deleteById(id);
+					deletedAccount = allAccount.indexOf(ba)+1;
+					break;
+				case "IRA":
+					irarepo.deleteById(id);
+					deletedAccount = allAccount.indexOf(ba)+1;
+					break;
+				case "RothIRA":
+					RothIRARepo.deleteById(id);
+					deletedAccount = allAccount.indexOf(ba)+1;
+					break;
+				case "RolloverIRA":
+					RollIRA.deleteById(id);
+					deletedAccount = allAccount.indexOf(ba)+1;
+					break;
 				default:
 					break;
 				}
 			}
 		}
-		return ah;
+		if(deletedAccount > 0)
+			allAccount.remove(deletedAccount-1);
+		return allAccount;
 
 	}
 }
