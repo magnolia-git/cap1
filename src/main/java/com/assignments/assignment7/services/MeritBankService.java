@@ -1,6 +1,5 @@
 package com.assignments.assignment7.services;
 
-import java.io.Console;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -722,9 +721,25 @@ public class MeritBankService {
 			break;
 		case "CheckingAccount":
 			checkingAccountRepository.save((CheckingAccount) transfer.getTargetAccount());
+			break;
+		case "SavingsAccount":
+			savingsAccountRepository.save((SavingsAccount) transfer.getTargetAccount());
+			break;
+		case "CDAccount":
+			cdAccountRepository.save((CDAccount) transfer.getTargetAccount());
+			break;
+		case "IRA":
+			irarepo.save((IRA) transfer.getTargetAccount());
+			break;
+		case "RothIRA":
+			RothIRARepo.save((RothIRA) transfer.getTargetAccount());
+			break;
+		case "RolloverIRA":
+			RollIRA.save((RolloverIRA) transfer.getTargetAccount());
+			break;
 		default:
 			break;
-		}
+}
 	}
 	public void saveSourceAccountByType(String typeOfAccount, TransferTransaction transfer)	{
 		switch (typeOfAccount) {
@@ -733,9 +748,42 @@ public class MeritBankService {
 			break;
 		case "CheckingAccount":
 			checkingAccountRepository.save((CheckingAccount) transfer.getSourceAccount());
+			break;
+		case "SavingsAccount":
+			savingsAccountRepository.save((SavingsAccount) transfer.getSourceAccount());
+			break;
+		case "CDAccount":
+			cdAccountRepository.save((CDAccount) transfer.getSourceAccount());
+			break;
+		case "IRA":
+			irarepo.save((IRA) transfer.getSourceAccount());
+			break;
+		case "RothIRA":
+			RothIRARepo.save((RothIRA) transfer.getSourceAccount());
+			break;
+		case "RolloverIRA":
+			RollIRA.save((RolloverIRA) transfer.getSourceAccount());
+			break;
 		default:
 			break;
+}
+	}
+	public void deleteAccountByID(HttpServletRequest request, Integer id) {
+		AccountHolder ah = getMyAccountInfo(request);
+		List<BankAccount> allAccount = ah.getAllAccounts();
+		for(BankAccount ba : allAccount) {
+			if(ba.getId() == id) {
+				switch (ba.getTypeOfAccount()) {
+				case "DBAChecking":
+					DBACheckingRepo.deleteById(id);
+					break;
+
+				default:
+					break;
+				}
+			}
 		}
+
 	}
 }
 

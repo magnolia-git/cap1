@@ -9,5 +9,5 @@ import com.assignments.assignment7.models.DBAChecking;
 
 public interface DBACheckingRepository extends JpaRepository<DBAChecking, Integer>{
 
-
+	void deleteById(Integer id);
 }
