@@ -57,6 +57,7 @@ public abstract class Transaction {
 	Date transactionDate = new Date(); 
 	String location;
     String type;
+    Integer originAccountID;
 	
 	public Transaction() {
 	}
@@ -183,6 +184,14 @@ public abstract class Transaction {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Integer getOriginAccountID() {
+		return originAccountID;
+	}
+
+	public void setOriginAccountID(Integer originAccountID) {
+		this.originAccountID = originAccountID;
 	}
 
 }

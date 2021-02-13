@@ -1,5 +1,6 @@
 package com.assignments.assignment7.services;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -816,4 +817,15 @@ public class MeritBankService {
 		return allAccount;
 
 	}
+
+	public List<Transaction> getAllTransactions() {
+		// TODO Auto-generated method stub
+		List<Transaction> allTransactions = new ArrayList<Transaction>();
+		allTransactions.addAll(depositRepository.findAll());
+		allTransactions.addAll(withdrawRepository.findAll());
+		allTransactions.addAll(transferTransactionRepository.findAll());
+
+		return allTransactions;
+	}
+	
 }

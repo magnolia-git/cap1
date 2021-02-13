@@ -663,4 +663,12 @@ public class MeritBankController {
 
 	}
 	
+	@PreAuthorize("hasAuthority('AccountHolder')")
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping(value = "/Me/Transactions")
+	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
+	public List<Transaction> getAllTransactions() {
+		return meritBankService.getAllTransactions();
+	}
+	
 }
