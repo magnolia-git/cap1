@@ -58,8 +58,9 @@ import Exceptions.TransactionFailureException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
-@CrossOrigin(origins="http://localhost:3000")
 @RestController
+//@CrossOrigin(origins="http://localhost:3000")
+@CrossOrigin(origins="*")
 @RequestMapping("/api")
 public class MeritBankController {
 	Logger log = LoggerFactory.getLogger(this.getClass());
