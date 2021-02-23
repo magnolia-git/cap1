@@ -438,7 +438,7 @@ public class MeritBankService {
 	public BankAccount postMyDeposit(HttpServletRequest request, DepositTransaction deposit, String type)
 			throws ExceedsCombinedBalanceLimitException, NegativeBalanceException {
 		switch (type) {
-		case "DBACheckingAccount":
+		case "DBAChecking":
 			DBAChecking existingDBA;
 			Optional<DBAChecking> dba = DBACheckingRepo.findById(deposit.getDbaChecking().getId());
 			if (dba != null) {
@@ -573,7 +573,7 @@ public class MeritBankService {
 	public BankAccount postMyWithdrawl(HttpServletRequest request, WithdrawTransaction withdraw, String type)
 			throws ExceedsCombinedBalanceLimitException, NegativeBalanceException {
 		switch (type) {
-		case "DBACheckingAccount":
+		case "DBAChecking":
 			DBAChecking existingDBA;
 			Optional<DBAChecking> dba = DBACheckingRepo.findById(withdraw.getDbaChecking().getId());
 			if (dba != null) {
