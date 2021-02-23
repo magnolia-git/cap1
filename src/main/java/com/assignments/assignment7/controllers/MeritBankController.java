@@ -121,7 +121,7 @@ public class MeritBankController {
 
 	@PreAuthorize("hasAuthority('admin')")
 	@ResponseStatus(HttpStatus.OK)
-	@PostMapping(value = "/AccountHolders/{id}/DBACheckingAccounts")
+	@PostMapping(value = "/AccountHolders/{id}/DBAChecking")
 	public DBAChecking postDBACheckingAccount(@Valid @RequestBody DBAChecking checkingAccount,
 			@PathVariable Integer id) throws ExceedsCombinedBalanceLimitException, TooManyAccountsException {
 		return meritBankService.postDBACheckingAccount(checkingAccount, id);
@@ -160,7 +160,7 @@ public class MeritBankController {
 
 	@PreAuthorize("hasAuthority('admin')")
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping(value = "/AccountHolders/{id}/DBACheckingAccounts")
+	@GetMapping(value = "/AccountHolders/{id}/DBAChecking")
 	public List<DBAChecking> getDBACheckingAccountsById(@PathVariable Integer id) throws AccountNotFoundException {
 
 			return meritBankService.getDBACheckingAccountsById(id);
@@ -365,7 +365,7 @@ public class MeritBankController {
 	
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = "/Me/DBACheckingAccount")
+	@PostMapping(value = "/Me/DBAChecking")
 	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
 	public DBAChecking postMyCheckingAccount(HttpServletRequest request,@Valid @RequestBody DBAChecking dbacheckingAccount)
 			throws ExceedsCombinedBalanceLimitException, TooManyAccountsException {
@@ -374,7 +374,7 @@ public class MeritBankController {
 	}
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.CREATED)
-	@GetMapping(value = "/Me/DBACheckingAccount")
+	@GetMapping(value = "/Me/DBAChecking")
 	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
 	public List<DBAChecking> getMyDBACheckingAccounts(HttpServletRequest request) {
 		return meritBankService.getMyDBACheckingAccounts(request);
@@ -382,7 +382,7 @@ public class MeritBankController {
 	
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = "/Me/DBACheckingAccount/Deposit")
+	@PostMapping(value = "/Me/DBAChecking/Deposit")
 	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
 	public BankAccount postMyDBACheckingDeposit(HttpServletRequest request
 			,@Valid @RequestBody DepositTransaction deposit)
@@ -393,7 +393,7 @@ public class MeritBankController {
 	
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping(value = "/Me/DBACheckingAccount/Deposit")
+	@GetMapping(value = "/Me/DBAChecking/Deposit")
 	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
 	public List<Transaction> getMyDeposit() {
 		return meritBankService.getMyDeposit("DBACheckingAccount");
@@ -511,7 +511,7 @@ public class MeritBankController {
 	
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = "/Me/DBACheckingAccount/Withdraw")
+	@PostMapping(value = "/Me/DBAChecking/Withdraw")
 	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
 	public BankAccount postMyDBACheckingWithdraw(HttpServletRequest request
 			,@Valid @RequestBody WithdrawTransaction withdraw)
@@ -523,7 +523,7 @@ public class MeritBankController {
 	@PreAuthorize("hasAuthority('AccountHolder')")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
-	@GetMapping(value = "/Me/DBACheckingAccount/Withdraw")
+	@GetMapping(value = "/Me/DBAChecking/Withdraw")
 	public List<Transaction> getMyWithdrawl() {
 		return meritBankService.getMyWithdrawl("DBACheckingAccount");
 	}
@@ -654,7 +654,7 @@ public class MeritBankController {
 	@GetMapping(value = "/Me/Transfer")
 	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
 	public List<Transaction> getMyTransfer() {
-		return meritBankService.getMyWithdrawl("DBACheckingAccount");
+		return meritBankService.getMyWithdrawl("DBAChecking");
 	}
 	
 	@RequestMapping(value = "/Me/Delete/{id}", method = RequestMethod.DELETE)//AUTHENTICATE LOGIN
